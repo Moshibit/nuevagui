@@ -8,6 +8,7 @@ screen main_menu():
     style_prefix "main_menu"
     tag menu
 
+    ## --- Variables de pantalla ---
     default start_submenu = False
     default load_submenu = False
 
@@ -36,46 +37,36 @@ screen main_menu():
 
     ## --- Botones principales ---
     hbox:
-        style_prefix "main_menu_navi"
+        style "main_menu_navi"
+        style_prefix "navi"
 
-        # Iniciar
-        vbox:
+        vbox: # Iniciar
             imagebutton:
                 auto "gui/button/mmplay_%s.png"
                 action If(persistent.first_run, Start(), ToggleScreenVariable("start_submenu", True))
             text _("Iniciar")
-
-        # Cargar
-        vbox:
+        vbox: # Cargar
             imagebutton:
                 auto "gui/button/mmload_%s.png"
                 action ToggleScreenVariable("load_submenu", True)
                 sensitive not persistent.first_run
             text _("Cargar")
-
-        # Opciones
-        vbox:
+        vbox: # Opciones
             imagebutton:
                 auto "gui/button/mmoptions_%s.png"
                 action ShowMenu("preferences")
             text _("Opciones")
-
-        # Extras
-        vbox:
+        vbox: # Extras
             imagebutton:
                 auto "gui/button/mmextras_%s.png"
                 action ShowMenu("extras")
             text _("Extras")
-
-        # Acerca de
-        vbox:
+        vbox: # Acerca de
             imagebutton:
                 auto "gui/button/mmabout_%s.png"
                 action ShowMenu("about")
             text _("Acerca de")
-
-        # Salir
-        vbox:
+        vbox: # Salir
             imagebutton:
                 auto "gui/button/mmexit_%s.png"
                 action Quit()
@@ -98,15 +89,12 @@ screen main_menu():
                 
                 textbutton "▶ " + _("Nueva partida"):
                     action [Start(), Hide("start_submenu")]
-                    #style "navi_text"
                 if persistent.end_game:
                     textbutton "➕ " + _("Nueva partida +"):
-                        action [Start(), Hide("start_submenu")] #TODO: Iniciar en Start("new_game_plus")
-                        #style "navi_text"   
+                        action [Start("new_game_plus"), Hide("start_submenu")]
                 if persistent.unlocked_routes:
                     textbutton "🔀 " + _("Selector de Rutas"):
                         action [ShowMenu("route_selector"), Hide("start_submenu")] #TODO: hacer una pantalla con tag menu, en la pantalla se eligen las rrutas desbloqueadas
-
                 if persistent.after_story_unlocked:
                     textbutton "💞 " + _("After Stories"):
                         action [ShowMenu("after_story_selector"), Hide("start_submenu")] #TODO  hacer una pantalla con tag menu, en la pantalla se eligen los after disponibles
@@ -125,40 +113,53 @@ screen main_menu():
                 textbutton "💾 " + _("Continuar"):
                     action [QuickLoad(), Hide("load_submenu")]
                     sensitive FileLoadable(1)
-                
                 textbutton "➡️ " + _("Cargar partida"):
                     action [ShowMenu("load"), Hide("load_submenu")]
 
     ## --- información del juegos ---
-    vbox:
-        # ... Copyright (inferior izquierdo) ...
+    vbox: # ... Copyright (inferior izquierdo) ...
         style "copyright_vbox"
-        text _("© [gui.year] [gui.developer]. Todos los derechos reservados."):
-            style "main_menu_textinfo" # XXX
+        #style_prefix "main_meunu_info"
 
-    vbox:
-        # ... Versión (inferior derecho) ...
+        text _("© [gui.year] [gui.developer]. Todos los derechos reservados.") style "main_menu_info_text"
+
+    vbox: # ... Versión (inferior derecho) ...
         style "version_vbox"
-        style_prefix "main_menu"
+        style_prefix "main_menu_info"
         
         if gui.show_name:
-            text "[config.name!t]":
-                #style "main_menu_textinfo" # XXX
-        text _("versión: [config.version]"):
-            #style "main_menu_textinfo" # XXX
-        text _("edición: [gui.edition]"):
-            #style "main_menu_textinfo" # XXX
+            text "[config.name!t]"
+        text _("versión: [config.version]")
+        text _("edición: [gui.edition]")
         if gui.rated != "All":
-            text _("Clasificación: [gui.rated]"):
-                #style "main_menu_textinfo" # XXX
+            text _("Clasificación: [gui.rated]")
         
 
 # === Estilos ===
-style main_menu_frame is empty
+# --- General ---
+#DEPRECATED: style main_menu_frame is empty
 style main_menu_vbox is vbox
 style main_menu_text is gui_text
 style main_menu_textbutton is main_menu_text
-style main_menu_textinfo is main_menu_text
+style main_menu_info_text is main_menu_text
+
+# --- Contenedores principales ---
+style top_buttons_hbox:
+    xalign 1.0
+    xoffset -20
+    ypos 20 
+    spacing 10
+
+style main_menu_navi: # navi_hbox
+    xalign 0.5
+    yalign 0.92
+    spacing gui.main_menu_buttons_spacing
+    box_align 0.5
+
+style navi_vbox is vbox:
+    xalign 1.0
+    spacing 5
+    box_align 0.5
 
 style copyright_vbox is vbox:
     xalign 0.0
@@ -175,30 +176,9 @@ style version_vbox is vbox:
     xmaximum 900
     text_align 1.0 #?
 
-style main_menu_navi: 
-    xalign 0.5
-    yalign 0.92
-    spacing 50
-
-style navi_hbox: # ???
-    xalign 0.5
-    yalign 0.92
-    spacing gui.main_menu_buttons_spacing
-    #box_align 0.5
-
-style navi_vbox: # ???
-    spacing 5
-    xalign 0.5
-
-style submenu_vbox:
-    spacing gui.submenu_spacing
-
-style top_buttons_hbox:
-    xalign 1.0 xoffset -20
-    ypos 20 
-    spacing 10
-    # #xpos -20
-    # yoffset 20
+# --- Texto ---
+style main_menu_text:
+    properties gui.text_properties("main_menu", accent=True)
 
 style main_menu_text:
     #properties gui.text_properties("main_menu", accent=True)
@@ -206,31 +186,28 @@ style main_menu_text:
     color "#ffffff"
     outlines [(1, "#000000aa", 0, 0)]
 
-style navi_text:
-    properties gui.text_properties("button")
+# style navi_text:
+#     properties gui.text_properties("button")
 
-style main_menu_textinfo:
-    properties gui.text_properties("version")
+# style main_menu_info_text:
+#     properties gui.text_properties("version")
 
 style navi_text is main_menu_text:
     size gui.main_menu_button_size
-    color gui.main_menu_button_color # ojo
+    color "#ff0000"#gui.main_menu_button_color # ojo
     # #xsize gui.submenu_button_width
     # #ysize gui.submenu_button_height
     # foreground Text("", size=24)  # Para emojis
     # #background Solid("#00000000")  # Transparente
     # #hover_background Frame("gui/button/hover.png", 6, 6)
 
-style close_layer:
-    area (0, 0, config.screen_width, config.screen_height)
-
-style main_menu_textinfo is main_menu_text:
+style main_menu_info_text is main_menu_text:
     # font gui.interface_text_font
     size gui.main_menu_info_size
-    xalign 1.0
     color gui.main_menu_info_color
     outlines gui.main_menu_info_outlines
-    
+
+## --- Submenus ---
 style submenu_frame:
     # background gui.submenu_bg 
     #    // 
@@ -240,6 +217,16 @@ style submenu_frame:
     #ysize gui.submenu_button_height
     xalign 0.5
     ypos 0.35
+
+style submenu_vbox: # Aplicado a los vbox dentro de los submenús
+    spacing gui.submenu_spacing
+
+style close_layer:
+    area (0, 0, config.screen_width, config.screen_height)
+
+
+    
+
 
 
 
