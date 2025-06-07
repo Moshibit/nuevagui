@@ -39,10 +39,6 @@
     #         ]
 
 
-
-
-
-
 ########### idea aparrte
 
 # label start:
