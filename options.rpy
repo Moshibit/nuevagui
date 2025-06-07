@@ -24,7 +24,7 @@ define gui.show_name = True
 
 ## Versión del juego.
 
-define config.version = "1.0"
+define config.version = "1.0.0"
 
 
 ## Texto situado en la pantalla 'Acerca de' del juego. Sitúa el texto entre
@@ -154,60 +154,60 @@ define config.save_directory = "nuevagui-1746650613"
 define config.window_icon = "gui/window_icon.png"
 
 
-## Configuración de 'Build' ####################################################
-##
-## Esta sección contrla cómo Ren'Py convierte el proyecto en archivos para la
-## distribución.
+# ## Configuración de 'Build' ####################################################
+# ##
+# ## Esta sección contrla cómo Ren'Py convierte el proyecto en archivos para la
+# ## distribución.
 
-init python:
+# init python:
 
-    ## Las funciones siguientes toman patrones de archivos. No son relevantes
-    ## las mayúsculas o minúsculas. Son relativos al directorio base, con o sin
-    ## una / inicial. Si corresponden más de un patrón, se usa el primero.
-    ##
-    ## En un patrón:
-    ##
-    ## / es el separador de directorios.
-    ##
-    ## * corresponde a todos los carácteres, excepto el separador de
-    ##   directorios.
-    ##
-    ## ** corresponde a todos los carácteres, incluynedo el separador de
-    ##    directorios.
-    ##
-    ## Por ejemplo, "*.txt" corresponde a los archivos .txt en el directorio
-    ## de base, "game/**.ogg" corresponde a los archivos .ogg del directorio
-    ## 'game' y sus subdirectorios y "**.psd" corresponde a los archivos .psd en
-    ## cualquier parte del proyecto.
+#     ## Las funciones siguientes toman patrones de archivos. No son relevantes
+#     ## las mayúsculas o minúsculas. Son relativos al directorio base, con o sin
+#     ## una / inicial. Si corresponden más de un patrón, se usa el primero.
+#     ##
+#     ## En un patrón:
+#     ##
+#     ## / es el separador de directorios.
+#     ##
+#     ## * corresponde a todos los carácteres, excepto el separador de
+#     ##   directorios.
+#     ##
+#     ## ** corresponde a todos los carácteres, incluynedo el separador de
+#     ##    directorios.
+#     ##
+#     ## Por ejemplo, "*.txt" corresponde a los archivos .txt en el directorio
+#     ## de base, "game/**.ogg" corresponde a los archivos .ogg del directorio
+#     ## 'game' y sus subdirectorios y "**.psd" corresponde a los archivos .psd en
+#     ## cualquier parte del proyecto.
 
-    ## Clasifica archivos como 'None' para excluirlos de la distribución.
+#     ## Clasifica archivos como 'None' para excluirlos de la distribución.
 
-    build.classify('**~', None)
-    build.classify('**.bak', None)
-    build.classify('**/.**', None)
-    build.classify('**/#**', None)
-    build.classify('**/thumbs.db', None)
+#     build.classify('**~', None)
+#     build.classify('**.bak', None)
+#     build.classify('**/.**', None)
+#     build.classify('**/#**', None)
+#     build.classify('**/thumbs.db', None)
 
-    ## Para archivar, se clasifican como 'archive'.
+#     ## Para archivar, se clasifican como 'archive'.
 
-    # build.classify('game/**.png', 'archive')
-    # build.classify('game/**.jpg', 'archive')
+#     # build.classify('game/**.png', 'archive')
+#     # build.classify('game/**.jpg', 'archive')
 
-    ## Los archivos que corresponden a patrones de documentation se duplican en
-    ## la distribución de mac; aparecerán en los archivos app y zip.
+#     ## Los archivos que corresponden a patrones de documentation se duplican en
+#     ## la distribución de mac; aparecerán en los archivos app y zip.
 
-    build.documentation('*.html')
-    build.documentation('*.txt')
-
-
-## Se necesita una clave de licencia de Google Play para realizar compras dentro
-## de la aplicación. Se puede encontrar en la consola de desarrollador de Google
-## Play, en "Monetizar" > "Configuración de la monetización" > "Licencias".
-
-# define build.google_play_key = "..."
+#     build.documentation('*.html')
+#     build.documentation('*.txt')
 
 
-## Los nombres de usuario y de proyecto asociados con un proyecto itch.io,
-## separados por una barra.
+# ## Se necesita una clave de licencia de Google Play para realizar compras dentro
+# ## de la aplicación. Se puede encontrar en la consola de desarrollador de Google
+# ## Play, en "Monetizar" > "Configuración de la monetización" > "Licencias".
 
-# define build.itch_project = "renpytom/test-project"
+# # define build.google_play_key = "..."
+
+
+# ## Los nombres de usuario y de proyecto asociados con un proyecto itch.io,
+# ## separados por una barra.
+
+# # define build.itch_project = "renpytom/test-project"

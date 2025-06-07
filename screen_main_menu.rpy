@@ -12,18 +12,19 @@ screen main_menu():
     default start_submenu = False
     default load_submenu = False
 
-    ## --- Fondo del menú ----
+    ## --- Fondo del menú---
     add gui.main_menu_background
 
     ## --- Logo del juego (posición configurable) ---
     add gui.main_menu_logo:
-        
         xalign gui.main_menu_logo_position[0] 
         ypos gui.main_menu_logo_position[1]
 
-    ## --- Botones de idioma y accesibilidad ---
+
+    ## --- Botones superiores ---
     hbox:
-        style "top_buttons_hbox"
+        style_prefix "navi"
+        style "top_buttons"
 
         imagebutton:
             idle "gui/button/mmaccesibility_idle.png"
@@ -35,16 +36,18 @@ screen main_menu():
             hover "gui/button/mmlanguage_hover.png"
             action ShowMenu("language")
 
+
     ## --- Botones principales ---
     hbox:
-        style "main_menu_navi"
         style_prefix "navi"
+        #style "navi_hbox"
 
         vbox: # Iniciar
             imagebutton:
                 auto "gui/button/mmplay_%s.png"
                 action If(persistent.first_run, Start(), ToggleScreenVariable("start_submenu", True))
             text _("Iniciar")
+            #style "navi_vbox"
         vbox: # Cargar
             imagebutton:
                 auto "gui/button/mmload_%s.png"
@@ -72,19 +75,21 @@ screen main_menu():
                 action Quit()
             text _("Salir")
 
+
     ## --- Capa de cierre de submenus ---
     if start_submenu or load_submenu:
         button:
             style "close_layer"
             action [SetScreenVariable("start_submenu",False), SetScreenVariable("load_submenu",False)]
 
-    # ... Submenú Iniciar ...
-    if start_submenu:
+
+    # --- Submenús ---
+    if start_submenu: # Submenú Iniciar
+        # NOTE: persistene.end_game, persistent.unlocked_routes y persistent.after_story_unlocked deben definirse = True en algun lugar del script de juego
         frame:
-            style "submenu_frame"
-            style_prefix "navi"
-            
-            has vbox:
+            style_prefix "submenu"
+
+            vbox:
                 spacing gui.submenu_spacing
                 
                 textbutton "▶ " + _("Nueva partida"):
@@ -99,15 +104,11 @@ screen main_menu():
                     textbutton "💞 " + _("After Stories"):
                         action [ShowMenu("after_story_selector"), Hide("start_submenu")] #TODO  hacer una pantalla con tag menu, en la pantalla se eligen los after disponibles
 
-            # NOTE: persistene.end_game, persistent.unlocked_routes y persistent.after_story_unlocked deben definirse = True en algun lugar del script de juego
-
-    # ... Submenú carga ...     
-    if load_submenu:
+    if load_submenu: # Submenú carga
         frame:
-            style "submenu_frame"
-            style_prefix "navi"
+            style_prefix "submenu"
 
-            has vbox:
+            vbox:
                 spacing gui.submenu_spacing
 
                 textbutton "💾 " + _("Continuar"):
@@ -116,123 +117,116 @@ screen main_menu():
                 textbutton "➡️ " + _("Cargar partida"):
                     action [ShowMenu("load"), Hide("load_submenu")]
 
+
     ## --- información del juegos ---
-    vbox: # ... Copyright (inferior izquierdo) ...
-        style "copyright_vbox"
-        #style_prefix "main_meunu_info"
+    vbox: # Copyright (inferior izquierdo)
+        style_prefix "copyright"
 
-        text _("© [gui.year] [gui.developer]. Todos los derechos reservados.") style "main_menu_info_text"
+        text _("© [gui.year] [gui.developer]. Todos los derechos reservados.")
 
-    vbox: # ... Versión (inferior derecho) ...
-        style "version_vbox"
-        style_prefix "main_menu_info"
-        
+    vbox: # Versión (inferior derecho)
+        style_prefix "version"
+
         if gui.show_name:
             text "[config.name!t]"
         text _("versión: [config.version]")
         text _("edición: [gui.edition]")
         if gui.rated != "All":
             text _("Clasificación: [gui.rated]")
-        
+        # Mostrar plataforma y mercado si son relevantes
+        if gui.platform != "Multiplataform":
+            text _("Plataforma: [gui.platform]")
+        if gui.market != "General":
+            text _("Distribución: [gui.market]")
+        # En screens.rpy (main_menu)
+        if config.developer:
+            text _("Build de desarrollo"):
+                style "dev_build_text"
 
 # === Estilos ===
-# --- General ---
-#DEPRECATED: style main_menu_frame is empty
+style main_meni_frame is empty
 style main_menu_vbox is vbox
-style main_menu_text is gui_text
-style main_menu_textbutton is main_menu_text
-style main_menu_info_text is main_menu_text
+style main_menu_text is gui_text:
+    font gui.interface_text_font
+    color "#ffffff" # TODO hacer que sean variables gui. y que se hereden a los otros textos
+    outlines [(1, "#000000aa", 0, 0)] # TODO hacer que sean variables gui. y que se hereden a los otros texto
+    # TODO con los cambios sobre los TODO anteriores deben eliminarse las redundancias por herencia
 
-# --- Contenedores principales ---
-style top_buttons_hbox:
+## --- Botones superiores
+style top_buttons:
     xalign 1.0
     xoffset -20
     ypos 20 
     spacing 10
 
-style main_menu_navi: # navi_hbox
+## --- Navegación principal ---
+style navi_hbox is hbox:
     xalign 0.5
     yalign 0.92
     spacing gui.main_menu_buttons_spacing
-    box_align 0.5
 
 style navi_vbox is vbox:
-    xalign 1.0
+    xalign 0.5
     spacing 5
-    box_align 0.5
 
+style navi_text is main_menu_text:
+    size gui.main_menu_button_size
+    color gui.main_menu_button_color
+    hover_color gui.main_menu_button_hover_color
+    outlines gui.main_menu_button_outlines
+    xalign 0.5
+
+
+## --- Submenus ---
+style submenu_frame is frame:
+    background Frame ("gui/overlay/submenu.png", 12, 12) # gui.submenu_f_bg
+    padding gui.submenu_padding
+    xalign 0.5
+    ypos 0.35
+
+style submenu_vbox is vbox:
+    spacing gui.submenu_spacing
+
+style submenu_button is button:
+    xsize gui.submenu_button_width
+    background None
+    hover_background Frame("gui/button/hover.png", 6, 6) # gui.hover_btn_bg
+
+style submenu_button_text is navi_text:
+    size gui.submenu_button_text_size
+
+
+# --- Información del juego
 style copyright_vbox is vbox:
     xalign 0.0
     xoffset gui.main_menu_copyright_position[0]
     yalign 1.0
     yoffset gui.main_menu_copyright_position[1]
-    xmaximum 900
+
+style copyright_text is main_menu_text:
+    font gui.main_menu_info_font
+    size gui.main_menu_info_size
+    color gui.main_menu_info_color
 
 style version_vbox is vbox:
     xalign 1.0
     xoffset gui.main_menu_version_position[0]
     yalign 1.0
     yoffset gui.main_menu_version_position[1]
-    xmaximum 900
-    text_align 1.0 #?
 
-# --- Texto ---
-style main_menu_text:
-    properties gui.text_properties("main_menu", accent=True)
-
-style main_menu_text:
-    #properties gui.text_properties("main_menu", accent=True)
-    font gui.interface_text_font
-    color "#ffffff"
-    outlines [(1, "#000000aa", 0, 0)]
-
-# style navi_text:
-#     properties gui.text_properties("button")
-
-# style main_menu_info_text:
-#     properties gui.text_properties("version")
-
-style navi_text is main_menu_text:
-    size gui.main_menu_button_size
-    color "#ff0000"#gui.main_menu_button_color # ojo
-    # #xsize gui.submenu_button_width
-    # #ysize gui.submenu_button_height
-    # foreground Text("", size=24)  # Para emojis
-    # #background Solid("#00000000")  # Transparente
-    # #hover_background Frame("gui/button/hover.png", 6, 6)
-
-style main_menu_info_text is main_menu_text:
-    # font gui.interface_text_font
+style version_text is main_menu_text:
+    font gui.main_menu_info_font
     size gui.main_menu_info_size
     color gui.main_menu_info_color
-    outlines gui.main_menu_info_outlines
+    xalign 1.0 # text_align 1.0
 
-## --- Submenus ---
-style submenu_frame:
-    # background gui.submenu_bg 
-    #    // 
-    # background Frame("gui/overlay/submenu.png", 12, 12)
-    padding gui.submenu_padding
-    #xsize gui.submenu_button_width
-    #ysize gui.submenu_button_height
-    xalign 0.5
-    ypos 0.35
+style dev_build_text is version_text:
+    color "#ff0000"
+    outlines [(1, "#ffffff", 0, 0)]
 
-style submenu_vbox: # Aplicado a los vbox dentro de los submenús
-    spacing gui.submenu_spacing
-
+# --- Capa de cierre ---
 style close_layer:
     area (0, 0, config.screen_width, config.screen_height)
-
-
-    
-
-
-
-
-
-
-
 
 
 
