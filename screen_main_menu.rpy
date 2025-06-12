@@ -38,42 +38,17 @@ screen main_menu():
 
 
     ## --- Botones principales ---
-    hbox:
-        style_prefix "navi"
-        #style "navi_hbox"
+    if gui.main_menu_orientation == "horizontal":
+        hbox:
+            style_prefix "navi"
+            style "navi_horizontal"
+            use main_menu_buttons
 
-        vbox: # Iniciar
-            imagebutton:
-                auto "gui/button/mmplay_%s.png"
-                action If(persistent.first_run, Start(), ToggleScreenVariable("start_submenu", True))
-            text _("Iniciar")
-            #style "navi_vbox"
-        vbox: # Cargar
-            imagebutton:
-                auto "gui/button/mmload_%s.png"
-                action ToggleScreenVariable("load_submenu", True)
-                sensitive not persistent.first_run
-            text _("Cargar")
-        vbox: # Opciones
-            imagebutton:
-                auto "gui/button/mmoptions_%s.png"
-                action ShowMenu("preferences")
-            text _("Opciones")
-        vbox: # Extras
-            imagebutton:
-                auto "gui/button/mmextras_%s.png"
-                action ShowMenu("extras")
-            text _("Extras")
-        vbox: # Acerca de
-            imagebutton:
-                auto "gui/button/mmabout_%s.png"
-                action ShowMenu("about")
-            text _("Acerca de")
-        vbox: # Salir
-            imagebutton:
-                auto "gui/button/mmexit_%s.png"
-                action Quit()
-            text _("Salir")
+    else: # Vertical
+        vbox:
+            style_prefix "navi"
+            style "navi_vertical"
+            use main_menu_buttons
 
 
     ## --- Capa de cierre de submenus ---
@@ -138,19 +113,18 @@ screen main_menu():
             text _("Plataforma: [gui.platform]")
         if gui.market != "General":
             text _("Distribución: [gui.market]")
-        # En screens.rpy (main_menu)
         if config.developer:
             text _("Build de desarrollo"):
                 style "dev_build_text"
+
 
 # === Estilos ===
 style main_meni_frame is empty
 style main_menu_vbox is vbox
 style main_menu_text is gui_text:
     font gui.interface_text_font
-    color "#ffffff" # TODO hacer que sean variables gui. y que se hereden a los otros textos
-    outlines [(1, "#000000aa", 0, 0)] # TODO hacer que sean variables gui. y que se hereden a los otros texto
-    # TODO con los cambios sobre los TODO anteriores deben eliminarse las redundancias por herencia
+    color gui.main_menu_text_color
+    outlines gui.main_menu_text_outlines
 
 ## --- Botones superiores
 style top_buttons:
@@ -160,10 +134,15 @@ style top_buttons:
     spacing 10
 
 ## --- Navegación principal ---
-style navi_hbox is hbox:
-    xalign 0.5
-    yalign 0.92
-    spacing gui.main_menu_buttons_spacing
+style navi_horizontal is hbox:
+    xalign gui.main_menu_hposition[0]
+    yalign gui.main_menu_hposition[1]
+    spacing gui.main_menu_buttons_hspacing
+
+style navi_vertical is vbox:
+    xalign gui.main_menu_vposition[0]
+    yalign gui.main_menu_vposition[1]
+    spacing gui.main_menu_buttons_vspacing
 
 style navi_vbox is vbox:
     xalign 0.5
@@ -171,18 +150,14 @@ style navi_vbox is vbox:
 
 style navi_text is main_menu_text:
     size gui.main_menu_button_size
-    color gui.main_menu_button_color
-    hover_color gui.main_menu_button_hover_color
-    outlines gui.main_menu_button_outlines
     xalign 0.5
-
 
 ## --- Submenus ---
 style submenu_frame is frame:
-    background Frame ("gui/overlay/submenu.png", 12, 12) # gui.submenu_f_bg
-    padding gui.submenu_padding
     xalign 0.5
     ypos 0.35
+    padding gui.submenu_padding
+    background gui.submenu_bg # TODO añadir assets
 
 style submenu_vbox is vbox:
     spacing gui.submenu_spacing
@@ -190,11 +165,10 @@ style submenu_vbox is vbox:
 style submenu_button is button:
     xsize gui.submenu_button_width
     background None
-    hover_background Frame("gui/button/hover.png", 6, 6) # gui.hover_btn_bg
+    hover_background  gui.submenu_button_hover_bg # Frame("gui/button/hover.png", 6, 6) # TODO: añadirvariable gui. , añadir assets
 
 style submenu_button_text is navi_text:
     size gui.submenu_button_text_size
-
 
 # --- Información del juego
 style copyright_vbox is vbox:
@@ -204,9 +178,8 @@ style copyright_vbox is vbox:
     yoffset gui.main_menu_copyright_position[1]
 
 style copyright_text is main_menu_text:
-    font gui.main_menu_info_font
     size gui.main_menu_info_size
-    color gui.main_menu_info_color
+    outlines gui.main_menu_info_outlines
 
 style version_vbox is vbox:
     xalign 1.0
@@ -215,19 +188,51 @@ style version_vbox is vbox:
     yoffset gui.main_menu_version_position[1]
 
 style version_text is main_menu_text:
-    font gui.main_menu_info_font
     size gui.main_menu_info_size
-    color gui.main_menu_info_color
+    outlines gui.main_menu_info_outlines
     xalign 1.0 # text_align 1.0
 
 style dev_build_text is version_text:
     color "#ff0000"
-    outlines [(1, "#ffffff", 0, 0)]
 
 # --- Capa de cierre ---
 style close_layer:
     area (0, 0, config.screen_width, config.screen_height)
+    background "#0003"
 
+# === Pantallas Auxiliares ===
+screen main_menu_buttons():
+    vbox: # Iniciar
+        imagebutton:
+            auto "gui/button/mmplay_%s.png"
+            action If(persistent.first_run, Start(), ToggleScreenVariable("start_submenu", True))
+        text _("Iniciar")
+    vbox: # Cargar
+        imagebutton:
+            auto "gui/button/mmload_%s.png"
+            action ToggleScreenVariable("load_submenu", True)
+            sensitive not persistent.first_run
+        text _("Cargar")
+    vbox: # Opciones
+        imagebutton:
+            auto "gui/button/mmoptions_%s.png"
+            action ShowMenu("preferences")
+        text _("Opciones")
+    vbox: # Extras
+        imagebutton:
+            auto "gui/button/mmextras_%s.png"
+            action ShowMenu("extras")
+        text _("Extras")
+    vbox: # Acerca de
+        imagebutton:
+            auto "gui/button/mmabout_%s.png"
+            action ShowMenu("about")
+        text _("Acerca de")
+    vbox: # Salir
+        imagebutton:
+            auto "gui/button/mmexit_%s.png"
+            action Quit()
+        text _("Salir")
 
 
 # ========================================================================
