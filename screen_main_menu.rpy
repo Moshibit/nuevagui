@@ -10,7 +10,6 @@ screen main_menu():
 
     ## --- Variables de pantalla ---
     default start_submenu = False
-    default load_submenu = False
 
     ## --- Fondo del menú---
     add gui.main_menu_background
@@ -23,18 +22,19 @@ screen main_menu():
 
     ## --- Botones superiores ---
     hbox:
-        style_prefix "navi"
-        style "top_buttons"
+        style_prefix "top_buttons"
 
         imagebutton:
-            idle "gui/button/mmaccesibility_idle.png"
-            hover "gui/button/mmaccesibility_hover.png"
+            auto "gui/button/mmaccesibility_%s.png"
             action ShowMenu("accesibility")
 
         imagebutton:
-            idle "gui/button/mmlanguage_idle.png"
-            hover "gui/button/mmlanguage_hover.png"
+            auto "gui/button/mmlanguage_%s.png"
             action ShowMenu("language")
+
+        imagebutton:
+            auto "gui/button/mmabout_%s.png"
+            action ShowMenu("about")
 
 
     ## --- Botones principales ---
@@ -52,10 +52,10 @@ screen main_menu():
 
 
     ## --- Capa de cierre de submenus ---
-    if start_submenu or load_submenu:
+    if start_submenu:
         button:
             style "close_layer"
-            action [SetScreenVariable("start_submenu",False), SetScreenVariable("load_submenu",False)]
+            action SetScreenVariable("start_submenu",False)
 
 
     # --- Submenús ---
@@ -64,33 +64,30 @@ screen main_menu():
         frame:
             style_prefix "submenu"
 
-            vbox:
-                spacing gui.submenu_spacing
-                
-                textbutton "▶ " + _("Nueva partida"):
-                    action [Start(), Hide("start_submenu")]
-                if persistent.end_game:
-                    textbutton "➕ " + _("Nueva partida +"):
-                        action [Start("new_game_plus"), Hide("start_submenu")]
-                if persistent.unlocked_routes:
-                    textbutton "🔀 " + _("Selector de Rutas"):
-                        action [ShowMenu("route_selector"), Hide("start_submenu")] #TODO: hacer una pantalla con tag menu, en la pantalla se eligen las rrutas desbloqueadas
-                if persistent.after_story_unlocked:
-                    textbutton "💞 " + _("After Stories"):
-                        action [ShowMenu("after_story_selector"), Hide("start_submenu")] #TODO  hacer una pantalla con tag menu, en la pantalla se eligen los after disponibles
+            hbox:
+                vbox: # Inicio
+                    spacing gui.submenu_spacing
+                    
+                    textbutton "▶ " + _("Nueva partida"):
+                        action [Start(), Hide("start_submenu")]
+                    if persistent.end_game:
+                        textbutton "➕ " + _("Nueva partida +"):
+                            action [Start("new_game_plus"), Hide("start_submenu")]
+                    if persistent.unlocked_routes:
+                        textbutton "🔀 " + _("Selector de Rutas"):
+                            action [ShowMenu("route_selector"), Hide("start_submenu")] #TODO: hacer una pantalla con tag menu, en la pantalla se eligen las rrutas desbloqueadas
+                    if persistent.after_story_unlocked:
+                        textbutton "💞 " + _("After Stories"):
+                            action [ShowMenu("after_story_selector"), Hide("start_submenu")] #TODO  hacer una pantalla con tag menu, en la pantalla se eligen los after disponibles
 
-    if load_submenu: # Submenú carga
-        frame:
-            style_prefix "submenu"
+                vbox: # Carga
+                    spacing gui.submenu_spacing
 
-            vbox:
-                spacing gui.submenu_spacing
-
-                textbutton "💾 " + _("Continuar"):
-                    action [QuickLoad(), Hide("load_submenu")]
-                    sensitive FileLoadable(1)
-                textbutton "➡️ " + _("Cargar partida"):
-                    action [ShowMenu("load"), Hide("load_submenu")]
+                    textbutton "💾 " + _("Continuar"):
+                        action [QuickLoad(), Hide("load_submenu")]
+                        sensitive FileLoadable(1)
+                    textbutton "➡️ " + _("Cargar partida"):
+                        action [ShowMenu("load"), Hide("load_submenu")]
 
 
     ## --- información del juegos ---
@@ -127,7 +124,7 @@ style main_menu_text is gui_text:
     outlines gui.main_menu_text_outlines
 
 ## --- Botones superiores
-style top_buttons:
+style top_buttons_hbox:
     xalign 1.0
     xoffset -20
     ypos 20 
@@ -155,17 +152,20 @@ style navi_text is main_menu_text:
 ## --- Submenus ---
 style submenu_frame is frame:
     xalign 0.5
-    ypos 0.35
+    ypos 0.45
     padding gui.submenu_padding
     background gui.submenu_bg # TODO añadir assets
 
+style submenu_hbox is hbox
+
 style submenu_vbox is vbox:
+    #box_align 10.0
     spacing gui.submenu_spacing
 
 style submenu_button is button:
     xsize gui.submenu_button_width
     background None
-    hover_background  gui.submenu_button_hover_bg # Frame("gui/button/hover.png", 6, 6) # TODO: añadirvariable gui. , añadir assets
+    hover_background gui.submenu_button_hover_bg
 
 style submenu_button_text is navi_text:
     size gui.submenu_button_text_size
@@ -200,6 +200,7 @@ style close_layer:
     area (0, 0, config.screen_width, config.screen_height)
     background "#0003"
 
+
 # === Pantallas Auxiliares ===
 screen main_menu_buttons():
     vbox: # Iniciar
@@ -207,12 +208,6 @@ screen main_menu_buttons():
             auto "gui/button/mmplay_%s.png"
             action If(persistent.first_run, Start(), ToggleScreenVariable("start_submenu", True))
         text _("Iniciar")
-    vbox: # Cargar
-        imagebutton:
-            auto "gui/button/mmload_%s.png"
-            action ToggleScreenVariable("load_submenu", True)
-            sensitive not persistent.first_run
-        text _("Cargar")
     vbox: # Opciones
         imagebutton:
             auto "gui/button/mmoptions_%s.png"
@@ -223,11 +218,6 @@ screen main_menu_buttons():
             auto "gui/button/mmextras_%s.png"
             action ShowMenu("extras")
         text _("Extras")
-    vbox: # Acerca de
-        imagebutton:
-            auto "gui/button/mmabout_%s.png"
-            action ShowMenu("about")
-        text _("Acerca de")
     vbox: # Salir
         imagebutton:
             auto "gui/button/mmexit_%s.png"
