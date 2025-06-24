@@ -99,6 +99,9 @@ screen main_menu():
     vbox: # Versión (inferior derecho)
         style_prefix "version"
 
+        if config.developer:
+            text _("Build de desarrollo"):
+                style "dev_build_text"
         if gui.show_name:
             text "[config.name!t]"
         text _("versión: [config.version]")
@@ -110,18 +113,26 @@ screen main_menu():
             text _("Plataforma: [gui.platform]")
         if gui.market != "General":
             text _("Distribución: [gui.market]")
-        if config.developer:
-            text _("Build de desarrollo"):
-                style "dev_build_text"
 
 
-# === Estilos ===
-style main_meni_frame is empty
+## === Estilos ===
+style main_menu_frame is empty
 style main_menu_vbox is vbox
-style main_menu_text is gui_text:
-    font gui.interface_text_font
-    color gui.main_menu_text_color
-    outlines gui.main_menu_text_outlines
+style main_menu_text is gui_text
+
+style main_menu_text:
+    properties gui.text_properties("main_menu", accent=True)
+
+
+# style navigation_button is gui_button
+# style navigation_button_text is gui_button_text
+
+# style navigation_button:
+#     size_group "navigation"
+#     properties gui.button_properties("navigation_button")
+
+# style navigation_button_text:
+#     properties gui.text_properties("navigation_button")
 
 ## --- Botones superiores
 style top_buttons_hbox:
@@ -146,7 +157,7 @@ style navi_vbox is vbox:
     spacing 5
 
 style navi_text is main_menu_text:
-    size gui.main_menu_button_size
+    properties gui.text_properties("main_menu_button")
     xalign 0.5
 
 ## --- Submenus ---
@@ -154,7 +165,7 @@ style submenu_frame is frame:
     xalign 0.5
     ypos 0.45
     padding gui.submenu_padding
-    background gui.submenu_bg # TODO añadir assets
+    # background gui.submenu_bg # TODO añadir asset
 
 style submenu_hbox is hbox
 
@@ -165,35 +176,37 @@ style submenu_vbox is vbox:
 style submenu_button is button:
     xsize gui.submenu_button_width
     background None
-    hover_background gui.submenu_button_hover_bg
+    #hover_background gui.submenu_button_hover_bg # TODO añadir asset
 
-style submenu_button_text is navi_text:
-    size gui.submenu_button_text_size
+style submenu_button_text is main_menu_text:
+    properties gui.text_properties("submenu_button")
 
 # --- Información del juego
-style copyright_vbox is vbox:
-    xalign 0.0
-    xoffset gui.main_menu_copyright_position[0]
-    yalign 1.0
-    yoffset gui.main_menu_copyright_position[1]
-
-style copyright_text is main_menu_text:
-    size gui.main_menu_info_size
-    outlines gui.main_menu_info_outlines
-
 style version_vbox is vbox:
-    xalign 1.0
+    xalign 0.0
     xoffset gui.main_menu_version_position[0]
     yalign 1.0
     yoffset gui.main_menu_version_position[1]
 
 style version_text is main_menu_text:
-    size gui.main_menu_info_size
-    outlines gui.main_menu_info_outlines
-    xalign 1.0 # text_align 1.0
+    properties gui.text_properties("version")
 
 style dev_build_text is version_text:
     color "#ff0000"
+
+style copyright_vbox is vbox:
+    xalign 1.0
+    xoffset gui.main_menu_copyright_position[0]
+    yalign 1.0
+    yoffset gui.main_menu_copyright_position[1]
+
+style copyright_text is version_text:
+    properties gui.text_properties("copyright")
+    xalign 1.0 # text_align 0.0
+
+
+
+
 
 # --- Capa de cierre ---
 style close_layer:
