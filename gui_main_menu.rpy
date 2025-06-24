@@ -12,7 +12,8 @@ define gui.main_menu_logo = "gui/game_logo.png"
 define gui.main_menu_logo_position = (0.5, 0.6) 
 
 ## Estilos de textos del menu principal
-define gui.main_menu_button_text_size = 26
+define gui.navi_button_text_size = 26
+define gui.navi_button_text_xalign = 0.5
 
 ## Estilos de textos informativos
 define gui.version_text_size = 18
@@ -23,11 +24,13 @@ define gui.main_menu_version_position = (20, -20)
 define gui.main_menu_copyright_position = (-20, -20)
 
 ## Estilos de botones principales
-define gui.main_menu_orientation = "horizontal" #OPTIONS: "horizontal" o "vertical"
-define gui.main_menu_hposition = (0.5, 0.9) # (xalign, yalign)
-define gui.main_menu_buttons_hspacing = 50 # 2
-define gui.main_menu_vposition = (0.05, 0.5) # (xalign, yalign)
-define gui.main_menu_buttons_vspacing = 2 #
+define gui.main_menu_navi_orientation = "horizontal" #OPTIONS: "horizontal" o "vertical"
+
+define gui.main_menu_navi_hposition = (0.5, 0.9) # (xalign, yalign)
+define gui.navi_buttons_hspacing = 30
+
+define gui.main_menu_navi_vposition = (0.05, 0.5) # (xalign, yalign)
+define gui.navi_buttons_vspacing = 2
 
 ## NOTE: Ejemplos de ajustes recomendados 
 ## Horizontal centrado inferiro -> position (0.5, 0.9), spacing 30
@@ -36,13 +39,13 @@ define gui.main_menu_buttons_vspacing = 2 #
 ## Centrado -> position (0.5, 0.5) spacing 30 Hor / 2 Ver
 
 ## Configuración de submenús
-define gui.submenu_bg = Frame("gui/overlay/submenu.png", 12, 12)  # TODO: Crear este asset
-define gui.submenu_button_hover_bg = Frame("gui/button/hover.png", 6, 6) # TODO: Crear este asset
-define gui.submenu_spacing = 10
-define gui.submenu_button_width = 250
-define gui.submenu_button_height = 45
+define gui.submenu_hspacing = 30
+define gui.submenu_vspacing = 10
 define gui.submenu_padding = (25, 25)
+
 define gui.submenu_button_text_size = 24
+define gui.submenu_button_text_xalign = 0.0
+
 
 ## Variables de build (TEMPORAL - mover a build.rpy) ##
 define gui.year = 2025

@@ -19,77 +19,6 @@ screen main_menu():
         xalign gui.main_menu_logo_position[0] 
         ypos gui.main_menu_logo_position[1]
 
-
-    ## --- Botones superiores ---
-    hbox:
-        style_prefix "top_buttons"
-
-        imagebutton:
-            auto "gui/button/mmaccesibility_%s.png"
-            action ShowMenu("accesibility")
-
-        imagebutton:
-            auto "gui/button/mmlanguage_%s.png"
-            action ShowMenu("language")
-
-        imagebutton:
-            auto "gui/button/mmabout_%s.png"
-            action ShowMenu("about")
-
-
-    ## --- Botones principales ---
-    if gui.main_menu_orientation == "horizontal":
-        hbox:
-            style_prefix "navi"
-            style "navi_horizontal"
-            use main_menu_buttons
-
-    else: # Vertical
-        vbox:
-            style_prefix "navi"
-            style "navi_vertical"
-            use main_menu_buttons
-
-
-    ## --- Capa de cierre de submenus ---
-    if start_submenu:
-        button:
-            style "close_layer"
-            action SetScreenVariable("start_submenu",False)
-
-
-    # --- Submenús ---
-    if start_submenu: # Submenú Iniciar
-        # NOTE: persistene.end_game, persistent.unlocked_routes y persistent.after_story_unlocked deben definirse = True en algun lugar del script de juego
-        frame:
-            style_prefix "submenu"
-
-            hbox:
-                vbox: # Inicio
-                    spacing gui.submenu_spacing
-                    
-                    textbutton "▶ " + _("Nueva partida"):
-                        action [Start(), Hide("start_submenu")]
-                    if persistent.end_game:
-                        textbutton "➕ " + _("Nueva partida +"):
-                            action [Start("new_game_plus"), Hide("start_submenu")]
-                    if persistent.unlocked_routes:
-                        textbutton "🔀 " + _("Selector de Rutas"):
-                            action [ShowMenu("route_selector"), Hide("start_submenu")] #TODO: hacer una pantalla con tag menu, en la pantalla se eligen las rrutas desbloqueadas
-                    if persistent.after_story_unlocked:
-                        textbutton "💞 " + _("After Stories"):
-                            action [ShowMenu("after_story_selector"), Hide("start_submenu")] #TODO  hacer una pantalla con tag menu, en la pantalla se eligen los after disponibles
-
-                vbox: # Carga
-                    spacing gui.submenu_spacing
-
-                    textbutton "💾 " + _("Continuar"):
-                        action [QuickLoad(), Hide("load_submenu")]
-                        sensitive FileLoadable(1)
-                    textbutton "➡️ " + _("Cargar partida"):
-                        action [ShowMenu("load"), Hide("load_submenu")]
-
-
     ## --- información del juegos ---
     vbox: # Copyright (inferior izquierdo)
         style_prefix "copyright"
@@ -114,25 +43,92 @@ screen main_menu():
         if gui.market != "General":
             text _("Distribución: [gui.market]")
 
+    ## --- Botones superiores ---
+    hbox:
+        style_prefix "top_buttons"
+
+        imagebutton:
+            auto "gui/button/mmaccesibility_%s.png"
+            action ShowMenu("accesibility")
+
+        imagebutton:
+            auto "gui/button/mmlanguage_%s.png"
+            action ShowMenu("language")
+
+        imagebutton:
+            auto "gui/button/mmabout_%s.png"
+            action ShowMenu("about")
+
+
+    ## --- Botones principales ---
+    if gui.main_menu_navi_orientation == "horizontal":
+        hbox:
+            style_prefix "navi"
+            style "navi_horizontal"
+            use navi_content
+
+    else: # Vertical
+        vbox:
+            style_prefix "navi"
+            style "navi_vertical"
+            use navi_content
+
+
+    ## --- Capa de cierre de submenus ---
+    if start_submenu:
+
+        button:
+            style "close_layer"
+            action SetScreenVariable("start_submenu",False)
+
+
+    # --- Submenús ---
+    # TODO: hacer que al presionar esc se cierre el submenu
+    # TODO: hacer que aparesca 
+        # NOTE: persistene.end_game, persistent.unlocked_routes y persistent.after_story_unlocked deben definirse = True en algun lugar del script de juego
+        frame:
+            style_prefix "submenu"
+
+            hbox:
+                vbox: # Inicio
+                    textbutton "▶ " + _("Nueva partida"):
+                        action Start()#, Hide("start_submenu")]
+                    if persistent.end_game:
+                        textbutton "➕ " + _("Nueva partida +"):
+                            action Start("new_game_plus")#, Hide("start_submenu")]
+                    if persistent.unlocked_routes:
+                        textbutton "🔀 " + _("Selector de Rutas"):
+                            action ShowMenu("route_selector")#, Hide("start_submenu")] #TODO: hacer una pantalla con tag menu, en la pantalla se eligen las rutas desbloqueadas
+                    if persistent.after_story_unlocked:
+                        textbutton "💞 " + _("After Stories"):
+                            action ShowMenu("after_story_selector")#, Hide("start_submenu")] #TODO  hacer una pantalla con tag menu, en la pantalla se eligen los after disponibles
+
+                vbox: # Carga
+                    textbutton "💾 " + _("Continuar"): # TODO: Resolver lo de cargar la ultima partida
+                        action FileLoad("quitesave, slot=True")#, Hide("start_submenu")]
+                        #sensitive FileLoadable(1)
+                    textbutton "➡️ " + _("Cargar partida"):
+                        action ShowMenu("load")#, Hide("start_submenu")]
+
 
 ## === Estilos ===
 style main_menu_frame is empty
 style main_menu_vbox is vbox
 style main_menu_text is gui_text
 
+style navi_button is gui_button
+style navi_button_text is gui_button_text
+
 style main_menu_text:
     properties gui.text_properties("main_menu", accent=True)
 
+style navi_button:
+    size_group "navi"
+    properties gui.button_properties("navi_button")
 
-# style navigation_button is gui_button
-# style navigation_button_text is gui_button_text
+style navi_button_text:
+    properties gui.text_properties("navi_button")
 
-# style navigation_button:
-#     size_group "navigation"
-#     properties gui.button_properties("navigation_button")
-
-# style navigation_button_text:
-#     properties gui.text_properties("navigation_button")
 
 ## --- Botones superiores
 style top_buttons_hbox:
@@ -143,21 +139,21 @@ style top_buttons_hbox:
 
 ## --- Navegación principal ---
 style navi_horizontal is hbox:
-    xalign gui.main_menu_hposition[0]
-    yalign gui.main_menu_hposition[1]
-    spacing gui.main_menu_buttons_hspacing
+    xalign gui.main_menu_navi_hposition[0]
+    yalign gui.main_menu_navi_hposition[1]
+    spacing gui.navi_buttons_hspacing
 
 style navi_vertical is vbox:
-    xalign gui.main_menu_vposition[0]
-    yalign gui.main_menu_vposition[1]
-    spacing gui.main_menu_buttons_vspacing
+    xalign gui.main_menu_navi_vposition[0]
+    yalign gui.main_menu_navi_vposition[1]
+    spacing gui.navi_buttons_vspacing
 
 style navi_vbox is vbox:
     xalign 0.5
     spacing 5
 
 style navi_text is main_menu_text:
-    properties gui.text_properties("main_menu_button")
+    properties gui.text_properties("navi_button")
     xalign 0.5
 
 ## --- Submenus ---
@@ -165,20 +161,17 @@ style submenu_frame is frame:
     xalign 0.5
     ypos 0.45
     padding gui.submenu_padding
-    # background gui.submenu_bg # TODO añadir asset
 
-style submenu_hbox is hbox
+style submenu_hbox is hbox:
+    spacing gui.submenu_hspacing
 
 style submenu_vbox is vbox:
     #box_align 10.0
-    spacing gui.submenu_spacing
+    spacing gui.submenu_vspacing
 
-style submenu_button is button:
-    xsize gui.submenu_button_width
-    background None
-    #hover_background gui.submenu_button_hover_bg # TODO añadir asset
+style submenu_button is gui_button
 
-style submenu_button_text is main_menu_text:
+style submenu_button_text is gui_button_text:
     properties gui.text_properties("submenu_button")
 
 # --- Información del juego
@@ -204,38 +197,35 @@ style copyright_text is version_text:
     properties gui.text_properties("copyright")
     xalign 1.0 # text_align 0.0
 
-
-
-
-
 # --- Capa de cierre ---
 style close_layer:
     area (0, 0, config.screen_width, config.screen_height)
-    background "#0003"
+    background "#000000aa"
 
 
 # === Pantallas Auxiliares ===
-screen main_menu_buttons():
+screen navi_content():
     vbox: # Iniciar
         imagebutton:
             auto "gui/button/mmplay_%s.png"
             action If(persistent.first_run, Start(), ToggleScreenVariable("start_submenu", True))
-        text _("Iniciar")
+        textbutton _("Iniciar"):
+            action If(persistent.first_run, Start(), ToggleScreenVariable("start_submenu", True))
     vbox: # Opciones
         imagebutton:
             auto "gui/button/mmoptions_%s.png"
             action ShowMenu("preferences")
-        text _("Opciones")
+        textbutton _("Opciones") action ShowMenu("preferences")
     vbox: # Extras
         imagebutton:
             auto "gui/button/mmextras_%s.png"
             action ShowMenu("extras")
-        text _("Extras")
+        textbutton _("Extras") action ShowMenu("extras")
     vbox: # Salir
         imagebutton:
             auto "gui/button/mmexit_%s.png"
             action Quit()
-        text _("Salir")
+        textbutton _("Salir") action Quit()
 
 
 # ========================================================================
