@@ -50,31 +50,31 @@ label start:
         "ir a la izquierda":
             "elejiste ir a la izquerda"
             $ persistent.unlocked_routes.add("r1")
-            jump rute_1
+            jump route_1
 
         "ir a la derecha":
             "elejiste ir a la derecha"
             $ persistent.unlocked_routes.add("r2")
-            jump rute_2
+            jump route_2
 
         "regresar a casa":
             "decidiste no ir de aventura"
             $ persistent.unlocked_routes.add("r3")
-            jump ruta_3
+            jump route_3
 
-label rute_1:
+label route_1:
     "Te adentras en un bosque misterioso."
     # ... Contenido  de la ruta ...
     $ persistent.ends.add("end1")
     jump game_end
 
-label rute_2:
+label route_2:
     "Llegas a un río cristalino."
     # ... Contenido  de la ruta ...
     $ persistent.ends.add("end2")
     jump game_end
 
-label rute_3:
+label route_3:
     "Regresas a casa seguro."
     # ... Contenido  de la ruta ...
     $ persistent.ends.add("end3")
@@ -93,7 +93,10 @@ label game_end:
     if "end3" in persistent.ends:
         $ persistent.after_story_unlocked.add("friendship")
 
-    "Fin del camino..."
+    ".:. Fin del camino .:."
+    "..."
+    ".."
+    "."
 
     return
 

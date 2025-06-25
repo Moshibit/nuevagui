@@ -9,7 +9,6 @@ screen main_menu():
     tag menu
 
     ## --- Variables de pantalla ---
-    default start_submenu = False
 
     ## --- Fondo del menú---
     add gui.main_menu_background
@@ -72,44 +71,6 @@ screen main_menu():
             style_prefix "navi"
             style "navi_vertical"
             use navi_content
-
-
-    ## --- Capa de cierre de submenus ---
-    if start_submenu:
-
-        button:
-            style "close_layer"
-            action SetScreenVariable("start_submenu",False)
-
-
-    # --- Submenús ---
-    # TODO: hacer que al presionar esc se cierre el submenu
-    # TODO: hacer que aparesca 
-        # NOTE: persistene.end_game, persistent.unlocked_routes y persistent.after_story_unlocked deben definirse = True en algun lugar del script de juego
-        frame:
-            style_prefix "submenu"
-
-            hbox:
-                vbox: # Inicio
-                    textbutton "▶ " + _("Nueva partida"):
-                        action Start()#, Hide("start_submenu")]
-                    if persistent.end_game:
-                        textbutton "➕ " + _("Nueva partida +"):
-                            action Start("new_game_plus")#, Hide("start_submenu")]
-                    if persistent.unlocked_routes:
-                        textbutton "🔀 " + _("Selector de Rutas"):
-                            action ShowMenu("route_selector")#, Hide("start_submenu")] #TODO: hacer una pantalla con tag menu, en la pantalla se eligen las rutas desbloqueadas
-                    if persistent.after_story_unlocked:
-                        textbutton "💞 " + _("After Stories"):
-                            action ShowMenu("after_story_selector")#, Hide("start_submenu")] #TODO  hacer una pantalla con tag menu, en la pantalla se eligen los after disponibles
-
-                vbox: # Carga
-                    textbutton "💾 " + _("Continuar"): # TODO: Resolver lo de cargar la ultima partida
-                        action FileLoad("quitesave, slot=True")#, Hide("start_submenu")]
-                        #sensitive FileLoadable(1)
-                    textbutton "➡️ " + _("Cargar partida"):
-                        action ShowMenu("load")#, Hide("start_submenu")]
-
 
 ## === Estilos ===
 style main_menu_frame is empty
@@ -202,15 +163,14 @@ style close_layer:
     area (0, 0, config.screen_width, config.screen_height)
     background "#000000aa"
 
-
 # === Pantallas Auxiliares ===
-screen navi_content():
+screen navi_content(): # --- Contenido del navi ---
     vbox: # Iniciar
         imagebutton:
             auto "gui/button/mmplay_%s.png"
-            action If(persistent.first_run, Start(), ToggleScreenVariable("start_submenu", True))
+            action If(persistent.first_run, Start(), Show("submenu_screen"))
         textbutton _("Iniciar"):
-            action If(persistent.first_run, Start(), ToggleScreenVariable("start_submenu", True))
+            action If(persistent.first_run, Start(), Show("submenu_screen"))
     vbox: # Opciones
         imagebutton:
             auto "gui/button/mmoptions_%s.png"
@@ -227,6 +187,106 @@ screen navi_content():
             action Quit()
         textbutton _("Salir") action Quit()
 
+
+screen close_layer:
+    key "game_menu" action Hide(screen=None)
+
+    button:
+        style "close_layer"
+        action Hide(screen=None)
+
+screen submenu_screen: # --- Submenús ---
+    ## NOTE: persistene.end_game, persistent.unlocked_routes y 
+    ## persistent.after_story_unlocked deben definirse = True 
+    ## en algun lugar del script de juego
+
+    #tag menu
+    zorder 100
+    modal True
+
+    use close_layer
+
+    frame:
+        style_prefix "submenu"
+
+        hbox:
+            vbox: # Inicio
+                label _("Menú de inicio")
+                textbutton "▶ " + _("Nueva partida") action Start()
+                if persistent.end_game:
+                    textbutton "➕ " + _("Nueva partida +") action Start("new_game_plus")
+                if persistent.unlocked_routes:
+                    textbutton "🔀 " + _("Selector de Rutas") action Show("route_selector")
+                    # TODO: hacer una pantalla con tag menu, en la pantalla se eligen las rutas desbloqueadas
+                if persistent.after_story_unlocked:
+                    textbutton "💞 " + _("After Stories") action Show("after_story_selector")
+                    # TODO  hacer una pantalla con tag menu, en la pantalla se eligen los after disponibles
+
+            vbox: # Carga
+                label _("Menú de carga")
+                if renpy.can_load("quitsave"):
+                    textbutton "💾 " + _("Continuar") action FileLoad("quitsave", slot=True)
+                textbutton "➡️ " + _("Cargar partida") action ShowMenu("load")
+
+
+screen route_selector():
+    # TODO: ver por que brincaa lugares inesperados
+    #tag menu
+    modal True
+    zorder 200
+
+    use close_layer  # Reutiliza tu capa de cierre existente
+
+    frame:
+        style_prefix "submenu"
+        xalign 0.5
+        yalign 0.5
+        vbox:
+            spacing 25
+            label _("Seleccionar Ruta")
+            
+            vbox:
+                style_prefix "route"
+                for route in persistent.unlocked_routes:
+                    textbutton "[route]":
+                        action [SetVariable("selected_route", route), Start("route_"+route)]
+                        #hover_sound gui.hover_sound
+                        #activate_sound gui.activate_sound
+
+style route_button is submenu_button
+style route_button_text is submenu_button_text:
+    size 24
+
+
+screen after_story_selector():
+    # TODO mostrar todas las disponiblres aun que sea con insensitive
+    #tag menu
+    modal True
+    zorder 200
+
+    use close_layer
+
+    frame:
+        style_prefix "submenu"
+        xalign 0.5
+        yalign 0.5
+        vbox:
+            spacing 25
+            label _("After Stories Disponibles")
+            
+            grid 2 3:  # Ajusta según cuantos afters tengas
+                spacing 25
+                for story in persistent.after_story_unlocked:
+                    vbox:
+                        imagebutton:
+                            idle "gui/after/"+story+"_idle.png"
+                            hover "gui/after/"+story+"_hover.png"
+                            action Start("after_"+story)
+                        text _(story.capitalize()) style "after_text"
+
+style after_text is submenu_button_text:
+    size 20
+    xalign 0.5
 
 # ========================================================================
 # Contenido de la Historia y Galería
@@ -261,3 +321,334 @@ screen navi_content():
 #     Estilo: Mantén la estética de tu VN en el diseño del submenú.
 
 # Al elegir qué incluir, piensa en lo que tus jugadores disfrutarían más después de terminar la historia principal o mientras exploran diferentes rutas. Un buen apartado de "Extras" puede prolongar la vida útil de tu VN y aumentar la satisfacción del jugador.
+
+
+
+
+################################################################################
+## Principal y Pantalla de menu del juego.
+################################################################################
+
+## Pantalla del menú principal #################################################
+##
+## Usado para mostrar el menú principal cuando Ren'Py arranca.
+##
+## https://www.renpy.org/doc/html/screen_special.html#main-menu
+
+## TODO: hacer que el main menu muestre algo si permanece idle
+
+# screen main_menu():
+
+#     ## Esto asegura que cualquier otra pantalla de menu es remplazada.
+#     tag menu
+
+#     add gui.main_menu_background
+
+#     ## Este marco vacío oscurece el menu principal.
+#     frame:
+#         style "main_menu_frame"
+
+#     ## La sentencia 'use' incluye otra pantalla dentro de esta. El contenido
+#     ## real del menú principal está en la pantalla de navegación.
+#     use navigation
+
+#     ## Logo del juego
+#     # TODO cambiar de momento sera un place holder
+#     # TODO: hacer un image button que mande a una web
+#     #add gui.game_logo:
+#     #    xsize 354 ysize 222 #252*252 o 252*141 o 384*222
+#     #    xalign 0.0 yalign 0.0
+#     #    xoffset 20 yoffset 20
+
+#     ## información de versión
+#     if gui.show_name:
+
+#         vbox:
+
+#             style "main_menu_vbox"
+
+#             text "[config.name!t] [config.version]":
+#                 style "main_menu_textinfo" # "main_menu_title"
+
+#             if persistent.adt:
+#                 text "18+ Edition":
+#                     style "main_menu_textinfo"
+
+#             text "[gui.year] [gui.developer]": # " All Rights Recerved" ## definidos en options.rpy
+#                 style "main_menu_textinfo"
+
+#     # Esto invoca una label al pasar el tiempo.
+#     timer 45.0 action Start("main_menu_wait")
+
+
+# style main_menu_frame is empty
+# style main_menu_vbox is vbox
+# style main_menu_text is gui_text
+# style main_menu_title is main_menu_text
+# style main_menu_version is main_menu_text
+# style main_menu_textinfo is main_menu_version
+
+# style main_menu_frame:
+#     xsize 420 # 280<720, 420<1080
+#     yfill True
+
+#     background "gui/overlay/main_menu.png"
+
+# style main_menu_vbox:
+#     xalign 1.0
+#     xoffset -30 #-20<720, -30<1080
+#     xmaximum 1200 # 800<720, 1200<1080
+#     yalign 1.0
+#     yoffset -30 #-20<720, -30<1080
+
+# style main_menu_text:
+#     properties gui.text_properties("main_menu", accent=True)
+
+# style main_menu_title:
+#     properties gui.text_properties("title")
+
+# style main_menu_version:
+#     properties gui.text_properties("version")
+
+# style main_menu_textinfo:
+#     size 16 #14
+
+
+################################################################################
+## Principal y Pantalla de menu del juego.
+################################################################################
+
+## Pantalla de navegación ######################################################
+##
+## Esta pantalla está incluída en el menú principal y los menús del juego y
+## ofrece navegación a los otros menús y al inicio del juego.
+
+# screen navigation():
+
+#     vbox:
+#         style_prefix "navigation"
+
+#         xpos gui.navigation_xpos
+#         yalign 0.5
+
+#         spacing gui.navigation_spacing
+
+#         if main_menu:
+
+#             textbutton _("Comenzar") action Start()
+
+#             ## TODO agregar un boton para sideStories. oculto[debe ser oculto y no desvanecido]  solos al finalizar el juegon
+#             ##      o cambiar el comportamiento de del boton para mostrar un selector de historias.
+
+#             if renpy.can_load("quitsave"):
+#                 textbutton _("Continuar") action FileLoad("quitsave", slot=True)
+
+#         elif _in_replay:
+
+#             textbutton _("Finaliza repetición") action EndReplay(confirm=True)
+
+#         elif not main_menu:
+
+#             textbutton _("Menú principal") action MainMenu()
+
+#         if not main_menu and not _in_replay:
+
+#             textbutton _("Guardar") action ShowMenu("save")
+
+#         if not _in_replay:
+
+#             textbutton _("Cargar") action ShowMenu("load")
+
+#         null height (2 * gui.pref_spacing)
+
+#         textbutton _("Opciones") action ShowMenu("preferences")
+
+#         # if not main_menu:
+
+#             # textbutton _("Historial") action ShowMenu("history") # TODO retirar? si es asi solo comentar
+
+#             #X textbutton _("Estado") action ShowMenu("stats") ## TODO: hacer. quisas mandar al quick menu
+
+#         # if not main_menu:
+#         #     textbutton _("Enciclopedia") action ShowMenu("wiki_index") # ubicado en wiki.py
+
+#         if main_menu:
+
+#             textbutton _("Extras") action ShowMenu("navigation_extras") ## TODO: completar menus
+
+#             null height (2 * gui.pref_spacing)
+
+#             textbutton _("Acerca de") action ShowMenu("about")
+
+#         if renpy.variant("pc") or (renpy.variant("web") and not renpy.variant("mobile")):
+
+#             ## La ayuda no es necesaria ni relevante en dispositivos móviles.
+#             textbutton _("Ayuda") action ShowMenu("help_s") # original ShowMenu("help") #imagebutton auto "gui/button/help_%s.png" action ShowMenu("help_s")
+
+#             null height (2 * gui.pref_spacing)
+
+#             ## El botón de salida está prohibido en iOS y no es necesario en
+#             ## Android y Web.
+#             textbutton _("Salir") action Quit(confirm=not main_menu)
+
+
+# style navigation_button is gui_button
+# style navigation_button_text is gui_button_text
+
+# style navigation_button:
+#     size_group "navigation"
+#     properties gui.button_properties("navigation_button")
+
+#     #idle_background Frame("gui/button/menu_idle_background.png", 12, 12) # TODO este par deberia ser constantes en 01gui.rpy
+#     #hover_background Frame("gui/button/menu_hover_background.png", 12, 12)
+#     #xpadding 20 #ypadding 10
+#     #xmargin 5 ymargin 5
+
+# style navigation_button_text:
+#     properties gui.button_text_properties("navigation_button")
+
+
+
+################################################################################
+## Principal y Pantalla de menu del juego.
+################################################################################
+
+
+## Pantalla del menú del juego #################################################
+##
+## Esto distribuye la estructura de base del menú del juego. Es llamado con el
+## título de la pantalla y presenta el fondo, el título y la navegación.
+##
+## El parámetro 'scroll' puede ser 'None', "viewport" o "vpgrid". Cuando se usa
+## esta pantalla con uno o más elementos, que son transcluídos (situados) en su
+## interior.
+
+# screen game_menu(title, scroll=None, yinitial=0.0):
+
+#     style_prefix "game_menu"
+
+#     if main_menu:
+#         add gui.main_menu_background
+#     else:
+#         add gui.game_menu_background
+
+#     frame:
+#         style "game_menu_outer_frame"
+
+#         hbox:
+
+#             ## Reservar espacio para la sección de navegación.
+#             frame:
+#                 style "game_menu_navigation_frame"
+
+#             frame:
+#                 style "game_menu_content_frame"
+
+#                 if scroll == "viewport":
+
+#                     viewport:
+#                         yinitial yinitial
+#                         scrollbars "vertical"
+#                         mousewheel True
+#                         draggable True
+#                         pagekeys True
+
+#                         side_yfill True
+
+#                         vbox:
+#                             transclude
+
+#                 elif scroll == "vpgrid":
+
+#                     vpgrid:
+#                         cols 1
+#                         yinitial yinitial
+
+#                         scrollbars "vertical"
+#                         mousewheel True
+#                         draggable True
+#                         pagekeys True
+
+#                         side_yfill True
+
+#                         transclude
+
+#                 else:
+
+#                     transclude
+
+#     use navigation
+
+#     ## https://patreon.renpy.org/very-old-features.html ------------------------
+#     if not main_menu:
+
+#         $ minutes, seconds = divmod(int(renpy.get_game_runtime()), 60)
+
+#         text _("Tiempo de juego:\n[minutes]:[seconds:02d]"):
+#             style "gui_text"
+#             xpos 44
+#             ypos 850 # original 620 # antes 600
+#     ## -------------------------------------------------------------------------
+
+
+#     textbutton _("Volver"):
+#         style "return_button"
+
+#         action Return()
+
+#     label title
+
+#     if main_menu:
+#         key "game_menu" action ShowMenu("main_menu")
+
+
+# style game_menu_outer_frame is empty
+# style game_menu_navigation_frame is empty
+# style game_menu_content_frame is empty
+# style game_menu_viewport is gui_viewport
+# style game_menu_side is gui_side
+# style game_menu_scrollbar is gui_vscrollbar
+
+# style game_menu_label is gui_label
+# style game_menu_label_text is gui_label_text
+
+# style return_button is navigation_button
+# style return_button_text is navigation_button_text
+
+# style game_menu_outer_frame:
+#     bottom_padding 45 # 30<720, 45<1080
+#     top_padding 180 # 120<720, 180<1080
+
+#     background "gui/overlay/game_menu.png"
+
+# style game_menu_navigation_frame:
+#     xsize 420 # 280<720, 420<1080
+#     yfill True
+
+# style game_menu_content_frame:
+#     left_margin 60 # 40<720, 60<1080
+#     right_margin 30 # 20<720, 30<1080
+#     top_margin 15 # 10<720, 15<1080
+
+# style game_menu_viewport:
+#     xsize 1380 # 920<720, 1380<1080
+
+# style game_menu_vscrollbar:
+#     unscrollable gui.unscrollable
+
+# style game_menu_side:
+#     spacing 15 # 15<720, 15<1080
+
+# style game_menu_label:
+#     xpos 75 # 50<720, 75<1080
+#     ysize 180 # 120<720, 180<1080
+
+# style game_menu_label_text:
+#     size gui.title_text_size
+#     color gui.accent_color
+#     yalign 0.5
+
+# style return_button:
+#     xpos gui.navigation_xpos
+#     yalign 1.0
+#     yoffset -45 # -30<720, -45<1080
