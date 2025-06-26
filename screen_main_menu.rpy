@@ -119,9 +119,11 @@ style navi_text is main_menu_text:
 
 ## --- Submenus ---
 style submenu_frame is frame:
+    modal True
     xalign 0.5
-    ypos 0.45
+    yalign 0.5
     padding gui.submenu_padding
+    
 
 style submenu_hbox is hbox:
     spacing gui.submenu_hspacing
@@ -129,6 +131,9 @@ style submenu_hbox is hbox:
 style submenu_vbox is vbox:
     #box_align 10.0
     spacing gui.submenu_vspacing
+
+style submenu_text is gui_text:
+    size gui.submenu_button_text_size
 
 style submenu_button is gui_button
 
@@ -158,10 +163,6 @@ style copyright_text is version_text:
     properties gui.text_properties("copyright")
     xalign 1.0 # text_align 0.0
 
-# --- Capa de cierre ---
-style close_layer:
-    area (0, 0, config.screen_width, config.screen_height)
-    background "#000000aa"
 
 # === Pantallas Auxiliares ===
 screen navi_content(): # --- Contenido del navi ---
@@ -188,21 +189,15 @@ screen navi_content(): # --- Contenido del navi ---
         textbutton _("Salir") action Quit()
 
 
-screen close_layer:
-    key "game_menu" action Hide(screen=None)
-
-    button:
-        style "close_layer"
-        action Hide(screen=None)
-
 screen submenu_screen: # --- Submenús ---
-    ## NOTE: persistene.end_game, persistent.unlocked_routes y 
-    ## persistent.after_story_unlocked deben definirse = True 
-    ## en algun lugar del script de juego
+    # TODO: hacer que sea una pantalla completa y no una ventana flotante.
+    #       poner boton de return para regresar al mine menu. 
+    #       eliminar el zorder y añadir tag menu, quitar el close layer
+    # NOTE: persistene.end_game, persistent.unlocked_routes y 
+    #       persistent.after_story_unlocked deben definirse = True 
+    #       en algun lugar del script de juego
 
-    #tag menu
     zorder 100
-    modal True
 
     use close_layer
 
@@ -216,77 +211,21 @@ screen submenu_screen: # --- Submenús ---
                 if persistent.end_game:
                     textbutton "➕ " + _("Nueva partida +") action Start("new_game_plus")
                 if persistent.unlocked_routes:
-                    textbutton "🔀 " + _("Selector de Rutas") action Show("route_selector")
-                    # TODO: hacer una pantalla con tag menu, en la pantalla se eligen las rutas desbloqueadas
+                    textbutton "🔀 " + _("Selector de Rutas") action [ShowMenu("route_selector"), Hide("submenu_screen")]
                 if persistent.after_story_unlocked:
-                    textbutton "💞 " + _("After Stories") action Show("after_story_selector")
-                    # TODO  hacer una pantalla con tag menu, en la pantalla se eligen los after disponibles
-
+                    textbutton "💞 " + _("After Stories") action [ShowMenu("after_selector"), Hide("submenu_screen")]
+                    
             vbox: # Carga
                 label _("Menú de carga")
                 if renpy.can_load("quitsave"):
-                    textbutton "💾 " + _("Continuar") action FileLoad("quitsave", slot=True)
-                textbutton "➡️ " + _("Cargar partida") action ShowMenu("load")
+                    textbutton "💾 " + _("Reanudar") action FileLoad("quitsave", slot=True)
+                textbutton "E " + _("Continuar") action Continue(regexp='r"\d"')
+                textbutton "➡️ " + _("Cargar partida") action [ShowMenu("load"), Hide("submenu_screen")]
 
 
-screen route_selector():
-    # TODO: ver por que brincaa lugares inesperados
-    #tag menu
-    modal True
-    zorder 200
-
-    use close_layer  # Reutiliza tu capa de cierre existente
-
-    frame:
-        style_prefix "submenu"
-        xalign 0.5
-        yalign 0.5
-        vbox:
-            spacing 25
-            label _("Seleccionar Ruta")
-            
-            vbox:
-                style_prefix "route"
-                for route in persistent.unlocked_routes:
-                    textbutton "[route]":
-                        action [SetVariable("selected_route", route), Start("route_"+route)]
-                        #hover_sound gui.hover_sound
-                        #activate_sound gui.activate_sound
-
-style route_button is submenu_button
-style route_button_text is submenu_button_text:
-    size 24
-
-
-screen after_story_selector():
-    # TODO mostrar todas las disponiblres aun que sea con insensitive
-    #tag menu
-    modal True
-    zorder 200
-
-    use close_layer
-
-    frame:
-        style_prefix "submenu"
-        xalign 0.5
-        yalign 0.5
-        vbox:
-            spacing 25
-            label _("After Stories Disponibles")
-            
-            grid 2 3:  # Ajusta según cuantos afters tengas
-                spacing 25
-                for story in persistent.after_story_unlocked:
-                    vbox:
-                        imagebutton:
-                            idle "gui/after/"+story+"_idle.png"
-                            hover "gui/after/"+story+"_hover.png"
-                            action Start("after_"+story)
-                        text _(story.capitalize()) style "after_text"
-
-style after_text is submenu_button_text:
-    size 20
-    xalign 0.5
+# TODO: ver como mandar a la pantalla de opciones de video que se accdeder por SHIFT + G
+# TODO: mandar el boton de accecibilidad top button a la pantallas de accecibilidad SHIFT + A.
+# TODO: o acrear esa pantalla basandose en la de shift + A
 
 # ========================================================================
 # Contenido de la Historia y Galería

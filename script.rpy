@@ -13,14 +13,14 @@ default persistent.ends = set()
 
 # Diccionarios para nombres más legibles
 define route_titles = {
-    "r1": "Camino del Bosque",
-    "r2": "Camino del Río",
-    "r3": "Camino Seguro"
+    "route_1": "Camino del Bosque",
+    "route_2": "Camino del Río",
+    "route_3": "Camino Seguro"
 }
 
 define after_titles = {
-    "love": "Historia de Amor",
-    "friendship": "Amistad Eterna"
+    "after_love": "Historia de Amor",
+    "after_friendship": "Amistad Eterna"
 }
 
 
@@ -47,37 +47,37 @@ label start:
     menu choices_1:
         "Que ruta tomaré?"
 
-        "ir a la izquierda":
-            "elejiste ir a la izquerda"
-            $ persistent.unlocked_routes.add("r1")
+        "Ir a la izquierda":
+            "Elejiste ir a la izquerda"
+            $ persistent.unlocked_routes.add("route_1")
             jump route_1
 
-        "ir a la derecha":
-            "elejiste ir a la derecha"
-            $ persistent.unlocked_routes.add("r2")
+        "Ir a la derecha":
+            "Elejiste ir a la derecha"
+            $ persistent.unlocked_routes.add("route_2")
             jump route_2
 
-        "regresar a casa":
-            "decidiste no ir de aventura"
-            $ persistent.unlocked_routes.add("r3")
+        "Regresar a casa":
+            "Decidiste no ir de aventura"
+            $ persistent.unlocked_routes.add("route_3")
             jump route_3
 
 label route_1:
     "Te adentras en un bosque misterioso."
     # ... Contenido  de la ruta ...
-    $ persistent.ends.add("end1")
+    $ persistent.ends.add("end_1")
     jump game_end
 
 label route_2:
     "Llegas a un río cristalino."
     # ... Contenido  de la ruta ...
-    $ persistent.ends.add("end2")
+    $ persistent.ends.add("end_2")
     jump game_end
 
 label route_3:
     "Regresas a casa seguro."
     # ... Contenido  de la ruta ...
-    $ persistent.ends.add("end3")
+    $ persistent.ends.add("end_3")
     jump game_end
 
 label game_end:
@@ -87,18 +87,16 @@ label game_end:
     $ _quit_slot = None
 
     # Desbloquear after story si se cumplen condiciones
-    if "end1" in persistent.ends and "end2" in persistent.ends:
-        $ persistent.after_story_unlocked.add("love")
+    if "end_1" in persistent.ends and "end_2" in persistent.ends:
+        $ persistent.after_story_unlocked.add("after_love")
     
-    if "end3" in persistent.ends:
-        $ persistent.after_story_unlocked.add("friendship")
+    if "end_3" in persistent.ends:
+        $ persistent.after_story_unlocked.add("after_friendship")
 
     ".:. Fin del camino .:."
-    "..."
-    ".."
-    "."
 
     return
+
 
 # After stories
 label after_love:
