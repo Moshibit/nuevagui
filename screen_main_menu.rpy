@@ -77,18 +77,8 @@ style main_menu_frame is empty
 style main_menu_vbox is vbox
 style main_menu_text is gui_text
 
-style navi_button is gui_button
-style navi_button_text is gui_button_text
-
 style main_menu_text:
     properties gui.text_properties("main_menu", accent=True)
-
-style navi_button:
-    size_group "navi"
-    properties gui.button_properties("navi_button")
-
-style navi_button_text:
-    properties gui.text_properties("navi_button")
 
 
 ## --- Botones superiores
@@ -97,48 +87,6 @@ style top_buttons_hbox:
     xoffset -20
     ypos 20 
     spacing 10
-
-## --- Navegación principal ---
-style navi_horizontal is hbox:
-    xalign gui.main_menu_navi_hposition[0]
-    yalign gui.main_menu_navi_hposition[1]
-    spacing gui.navi_buttons_hspacing
-
-style navi_vertical is vbox:
-    xalign gui.main_menu_navi_vposition[0]
-    yalign gui.main_menu_navi_vposition[1]
-    spacing gui.navi_buttons_vspacing
-
-style navi_vbox is vbox:
-    xalign 0.5
-    spacing 5
-
-style navi_text is main_menu_text:
-    properties gui.text_properties("navi_button")
-    xalign 0.5
-
-## --- Submenus ---
-style submenu_frame is frame:
-    modal True
-    xalign 0.5
-    yalign 0.5
-    padding gui.submenu_padding
-    
-
-style submenu_hbox is hbox:
-    spacing gui.submenu_hspacing
-
-style submenu_vbox is vbox:
-    #box_align 10.0
-    spacing gui.submenu_vspacing
-
-style submenu_text is gui_text:
-    size gui.submenu_button_text_size
-
-style submenu_button is gui_button
-
-style submenu_button_text is gui_button_text:
-    properties gui.text_properties("submenu_button")
 
 # --- Información del juego
 style version_vbox is vbox:
@@ -162,6 +110,37 @@ style copyright_vbox is vbox:
 style copyright_text is version_text:
     properties gui.text_properties("copyright")
     xalign 1.0 # text_align 0.0
+
+
+## --- Navegación principal ---
+style navi_button is gui_button
+style navi_button_text is gui_button_text
+
+style navi_button:
+    size_group "navi"
+    properties gui.button_properties("navi_button")
+
+style navi_button_text:
+    properties gui.text_properties("navi_button")
+
+
+style navi_horizontal is hbox:
+    xalign gui.main_menu_navi_hposition[0]
+    yalign gui.main_menu_navi_hposition[1]
+    spacing gui.navi_buttons_hspacing
+
+style navi_vertical is vbox:
+    xalign gui.main_menu_navi_vposition[0]
+    yalign gui.main_menu_navi_vposition[1]
+    spacing gui.navi_buttons_vspacing
+
+style navi_vbox is vbox:
+    xalign 0.5
+    spacing 5
+
+style navi_text is main_menu_text:
+    properties gui.text_properties("navi_button")
+    xalign 0.5
 
 
 # === Pantallas Auxiliares ===
@@ -199,9 +178,12 @@ screen submenu_screen: # --- Submenús ---
 
     zorder 100
 
-    use close_layer
+    button:
+        style "close_layer"
+        action Hide()
 
     frame:
+        modal True
         style_prefix "submenu"
 
         hbox:
@@ -221,6 +203,36 @@ screen submenu_screen: # --- Submenús ---
                     textbutton "💾 " + _("Reanudar") action FileLoad("quitsave", slot=True)
                 textbutton "E " + _("Continuar") action Continue(regexp='r"\d"')
                 textbutton "➡️ " + _("Cargar partida") action [ShowMenu("load"), Hide("submenu_screen")]
+
+    key "game_menu" action Hide("submenu_screen")
+
+## --- capa de cierre ---
+style close_layer:
+    area (0, 0, config.screen_width, config.screen_height)
+    background "#000000aa"
+
+## --- Submenus ---
+style submenu_frame is frame:
+    
+    xalign 0.5
+    yalign 0.5
+    padding gui.submenu_padding
+    
+style submenu_hbox is hbox:
+    spacing gui.submenu_hspacing
+
+style submenu_vbox is vbox:
+    #box_align 10.0
+    spacing gui.submenu_vspacing
+
+style submenu_text is gui_text:
+    size gui.submenu_button_text_size
+
+style submenu_button is gui_button
+
+style submenu_button_text is gui_button_text:
+    properties gui.text_properties("submenu_button")
+
 
 
 # TODO: ver como mandar a la pantalla de opciones de video que se accdeder por SHIFT + G
