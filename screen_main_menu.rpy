@@ -200,8 +200,8 @@ screen submenu_screen: # --- Submenús ---
             vbox: # Carga
                 label _("Menú de carga")
                 if renpy.can_load("quitsave"):
-                    textbutton "💾 " + _("Reanudar") action FileLoad("quitsave", slot=True)
-                textbutton "E " + _("Continuar") action Continue(regexp='r"\d"')
+                    textbutton "💾 " + _("Reanudar") action FileLoad("quitsave", slot=True) #reanuda desde el punto en que se salio
+                textbutton "📌 " + _("Continuar") action Continue(regexp=r'\d',confirm=False) #[r'\d+',] reanuda desde el ultimo archivo salvado(o eso se supone que hace)
                 textbutton "➡️ " + _("Cargar partida") action [ShowMenu("load"), Hide("submenu_screen")]
 
     key "game_menu" action Hide("submenu_screen")

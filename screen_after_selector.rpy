@@ -8,7 +8,7 @@
         style_prefix "submenu"
         xalign 0.5
         yalign 0.5
-        
+
         vbox:
             spacing 25
             label _("After Stories Disponibles")
@@ -17,10 +17,10 @@
                 spacing 25
                 for story in after_titles:
                     if story in persistent.after_story_unlocked:
-                        textbutton "[after_titles[story]]":
+                        textbutton "🔓 " + "[after_titles[story]]":
                             action Start(story)
                     else:
-                        text "🔒"
+                        text "🔒 ? ? ?"
             hbox:
                 textbutton _("Regresar") action ShowMenu("main_menu")
                 textbutton _("Rutas") action ShowMenu("route_selector")

@@ -17,11 +17,11 @@
                 spacing 25
                 for route in route_titles:
                     if route in persistent.unlocked_routes:
-                        textbutton "[route_titles[route]]" action Start(route)
+                        textbutton "🔓 " + "[route_titles[route]]" action Start(route)
                         # hover_sound gui.hover_sound
                         # activate_sound gui.activate_sound
                     else:
-                        text "🔒"
+                        text "🔒 ? ? ?"
             hbox:
                 textbutton _("Regresar") action ShowMenu("main_menu")
                 textbutton _("After Stories") action ShowMenu("after_selector")
