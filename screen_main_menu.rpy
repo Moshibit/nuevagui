@@ -8,8 +8,6 @@ screen main_menu():
     style_prefix "main_menu"
     tag menu
 
-    ## --- Variables de pantalla ---
-
     ## --- Fondo del menú---
     add gui.main_menu_background
 
@@ -48,11 +46,11 @@ screen main_menu():
 
         imagebutton:
             auto "gui/button/mmaccesibility_%s.png"
-            action ShowMenu("accesibility")
+            action NullAction() # ShowMenu("accesibility") # TODO: hacer funcionar
 
         imagebutton:
             auto "gui/button/mmlanguage_%s.png"
-            action ShowMenu("language")
+            action NullAction() #ShowMenu("language") # TODO: hacer funcionar
 
         imagebutton:
             auto "gui/button/mmabout_%s.png"
@@ -201,7 +199,7 @@ screen submenu_screen: # --- Submenús ---
                 label _("Menú de carga")
                 if renpy.can_load("quitsave"):
                     textbutton "💾 " + _("Reanudar") action FileLoad("quitsave", slot=True) #reanuda desde el punto en que se salio
-                textbutton "📌 " + _("Continuar") action Continue(regexp=r'\d',confirm=False) #[r'\d+',] reanuda desde el ultimo archivo salvado(o eso se supone que hace)
+                textbutton "📌 " + _("Continuar") action Continue(regexp=r'\d',confirm=False) #[r'\d+',]       aparte # reanuda desde el ultimo archivo salvado(o eso se supone que hace)
                 textbutton "➡️ " + _("Cargar partida") action [ShowMenu("load"), Hide("submenu_screen")]
 
     key "game_menu" action Hide("submenu_screen")

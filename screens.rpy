@@ -403,481 +403,481 @@ style navigation_button_text:
 #     properties gui.text_properties("version")
 
 
-## Pantalla del menú del juego #################################################
-##
-## Esto distribuye la estructura de base del menú del juego. Es llamado con el
-## título de la pantalla y presenta el fondo, el título y la navegación.
-##
-## El parámetro 'scroll' puede ser 'None', "viewport" o "vpgrid". Se usa esta
-## pantalla con uno o más elementos, que son transcluídos (situados) en su
-## interior.
+# ## Pantalla del menú del juego #################################################
+# ##
+# ## Esto distribuye la estructura de base del menú del juego. Es llamado con el
+# ## título de la pantalla y presenta el fondo, el título y la navegación.
+# ##
+# ## El parámetro 'scroll' puede ser 'None', "viewport" o "vpgrid". Se usa esta
+# ## pantalla con uno o más elementos, que son transcluídos (situados) en su
+# ## interior.
 
-screen game_menu(title, scroll=None, yinitial=0.0, spacing=0):
+# screen game_menu(title, scroll=None, yinitial=0.0, spacing=0):
 
-    style_prefix "game_menu"
+#     style_prefix "game_menu"
 
-    if main_menu:
-        add gui.main_menu_background
-    else:
-        add gui.game_menu_background
+#     if main_menu:
+#         add gui.main_menu_background
+#     else:
+#         add gui.game_menu_background
 
-    frame:
-        style "game_menu_outer_frame"
+#     frame:
+#         style "game_menu_outer_frame"
 
-        hbox:
+#         hbox:
 
-            ## Reservar espacio para la sección de navegación.
-            frame:
-                style "game_menu_navigation_frame"
+#             ## Reservar espacio para la sección de navegación.
+#             frame:
+#                 style "game_menu_navigation_frame"
 
-            frame:
-                style "game_menu_content_frame"
+#             frame:
+#                 style "game_menu_content_frame"
 
-                if scroll == "viewport":
+#                 if scroll == "viewport":
 
-                    viewport:
-                        yinitial yinitial
-                        scrollbars "vertical"
-                        mousewheel True
-                        draggable True
-                        pagekeys True
+#                     viewport:
+#                         yinitial yinitial
+#                         scrollbars "vertical"
+#                         mousewheel True
+#                         draggable True
+#                         pagekeys True
 
-                        side_yfill True
+#                         side_yfill True
 
-                        vbox:
-                            spacing spacing
+#                         vbox:
+#                             spacing spacing
 
-                            transclude
+#                             transclude
 
-                elif scroll == "vpgrid":
+#                 elif scroll == "vpgrid":
 
-                    vpgrid:
-                        cols 1
-                        yinitial yinitial
+#                     vpgrid:
+#                         cols 1
+#                         yinitial yinitial
 
-                        scrollbars "vertical"
-                        mousewheel True
-                        draggable True
-                        pagekeys True
+#                         scrollbars "vertical"
+#                         mousewheel True
+#                         draggable True
+#                         pagekeys True
 
-                        side_yfill True
+#                         side_yfill True
 
-                        spacing spacing
+#                         spacing spacing
 
-                        transclude
+#                         transclude
 
-                else:
+#                 else:
 
-                    transclude
+#                     transclude
 
-    use navigation
+#     use navigation
 
-    textbutton _("Volver"):
-        style "return_button"
+#     textbutton _("Volver"):
+#         style "return_button"
 
-        action Return()
+#         action Return()
 
-    label title
+#     label title
 
-    if main_menu:
-        key "game_menu" action ShowMenu("main_menu")
+#     if main_menu:
+#         key "game_menu" action ShowMenu("main_menu")
 
 
-style game_menu_outer_frame is empty
-style game_menu_navigation_frame is empty
-style game_menu_content_frame is empty
-style game_menu_viewport is gui_viewport
-style game_menu_side is gui_side
-style game_menu_scrollbar is gui_vscrollbar
+# style game_menu_outer_frame is empty
+# style game_menu_navigation_frame is empty
+# style game_menu_content_frame is empty
+# style game_menu_viewport is gui_viewport
+# style game_menu_side is gui_side
+# style game_menu_scrollbar is gui_vscrollbar
 
-style game_menu_label is gui_label
-style game_menu_label_text is gui_label_text
+# style game_menu_label is gui_label
+# style game_menu_label_text is gui_label_text
 
-style return_button is navigation_button
-style return_button_text is navigation_button_text
+# style return_button is navigation_button
+# style return_button_text is navigation_button_text
 
-style game_menu_outer_frame:
-    bottom_padding 45
-    top_padding 180
+# style game_menu_outer_frame:
+#     bottom_padding 45
+#     top_padding 180
 
-    background "gui/overlay/game_menu.png"
+#     background "gui/overlay/game_menu.png"
 
-style game_menu_navigation_frame:
-    xsize 420
-    yfill True
+# style game_menu_navigation_frame:
+#     xsize 420
+#     yfill True
 
-style game_menu_content_frame:
-    left_margin 60
-    right_margin 30
-    top_margin 15
+# style game_menu_content_frame:
+#     left_margin 60
+#     right_margin 30
+#     top_margin 15
 
-style game_menu_viewport:
-    xsize 1380
+# style game_menu_viewport:
+#     xsize 1380
 
-style game_menu_vscrollbar:
-    unscrollable gui.unscrollable
+# style game_menu_vscrollbar:
+#     unscrollable gui.unscrollable
 
-style game_menu_side:
-    spacing 15
+# style game_menu_side:
+#     spacing 15
 
-style game_menu_label:
-    xpos 75
-    ysize 180
+# style game_menu_label:
+#     xpos 75
+#     ysize 180
 
-style game_menu_label_text:
-    size gui.title_text_size
-    color gui.accent_color
-    yalign 0.5
+# style game_menu_label_text:
+#     size gui.title_text_size
+#     color gui.accent_color
+#     yalign 0.5
 
-style return_button:
-    xpos gui.navigation_xpos
-    yalign 1.0
-    yoffset -45
+# style return_button:
+#     xpos gui.navigation_xpos
+#     yalign 1.0
+#     yoffset -45
 
 
-## Pantalla 'acerca de' ########################################################
-##
-## Esta pantalla da información sobre los créditos y el copyright del juego y de
-## Ren'Py.
-##
-## No hay nada especial en esta pantalla y por tanto sirve también como ejemplo
-## de cómo hacer una pantalla personalizada.
+# ## Pantalla 'acerca de' ########################################################
+# ##
+# ## Esta pantalla da información sobre los créditos y el copyright del juego y de
+# ## Ren'Py.
+# ##
+# ## No hay nada especial en esta pantalla y por tanto sirve también como ejemplo
+# ## de cómo hacer una pantalla personalizada.
 
-screen about():
+# screen about():
 
-    tag menu
+#     tag menu
 
-    ## Esta sentencia 'use' incluye la pantalla 'game_menu' dentro de esta. El
-    ## elemento 'vbox' se incluye entonces dentro del 'viewport' al interno de
-    ## la pantalla 'game_menu'.
-    use game_menu(_("Acerca de"), scroll="viewport"):
+#     ## Esta sentencia 'use' incluye la pantalla 'game_menu' dentro de esta. El
+#     ## elemento 'vbox' se incluye entonces dentro del 'viewport' al interno de
+#     ## la pantalla 'game_menu'.
+#     use game_menu(_("Acerca de"), scroll="viewport"):
 
-        style_prefix "about"
+#         style_prefix "about"
 
-        vbox:
+#         vbox:
 
-            label "[config.name!t]"
-            text _("Versión [config.version!t]\n")
+#             label "[config.name!t]"
+#             text _("Versión [config.version!t]\n")
 
-            ## 'gui.about' se ajusta habitualmente en 'options.rpy'.
-            if gui.about:
-                text "[gui.about!t]\n"
+#             ## 'gui.about' se ajusta habitualmente en 'options.rpy'.
+#             if gui.about:
+#                 text "[gui.about!t]\n"
 
-            text _("Hecho con {a=https://www.renpy.org/}Ren'Py{/a} [renpy.version_only].\n\n[renpy.license!t]")
+#             text _("Hecho con {a=https://www.renpy.org/}Ren'Py{/a} [renpy.version_only].\n\n[renpy.license!t]")
 
 
-style about_label is gui_label
-style about_label_text is gui_label_text
-style about_text is gui_text
+# style about_label is gui_label
+# style about_label_text is gui_label_text
+# style about_text is gui_text
 
-style about_label_text:
-    size gui.label_text_size
+# style about_label_text:
+#     size gui.label_text_size
 
 
-## Pantallas de carga y grabación ##############################################
-##
-## Estas pantallas permiten al jugador grabar el juego y cargarlo de nuevo. Como
-## comparten casi todos los elementos, ambas están implementadas en una tercera
-## pantalla: 'file_slots'.
-##
-## https://www.renpy.org/doc/html/screen_special.html#save https://
-## www.renpy.org/doc/html/screen_special.html#load
+# ## Pantallas de carga y grabación ##############################################
+# ##
+# ## Estas pantallas permiten al jugador grabar el juego y cargarlo de nuevo. Como
+# ## comparten casi todos los elementos, ambas están implementadas en una tercera
+# ## pantalla: 'file_slots'.
+# ##
+# ## https://www.renpy.org/doc/html/screen_special.html#save https://
+# ## www.renpy.org/doc/html/screen_special.html#load
 
-screen save():
+# screen save():
 
-    tag menu
+#     tag menu
 
-    use file_slots(_("Guardar"))
+#     use file_slots(_("Guardar"))
 
 
-screen load():
+# screen load():
 
-    tag menu
+#     tag menu
 
-    use file_slots(_("Cargar"))
+#     use file_slots(_("Cargar"))
 
 
-screen file_slots(title):
+# screen file_slots(title):
 
-    default page_name_value = FilePageNameInputValue(pattern=_("Página {}"), auto=_("Grabación automática"), quick=_("Grabación rápida"))
+#     default page_name_value = FilePageNameInputValue(pattern=_("Página {}"), auto=_("Grabación automática"), quick=_("Grabación rápida"))
 
-    use game_menu(title):
+#     use game_menu(title):
 
-        fixed:
+#         fixed:
 
-            ## Esto asegura que 'input' recibe el evento 'enter' antes que otros
-            ## botones.
-            order_reverse True
+#             ## Esto asegura que 'input' recibe el evento 'enter' antes que otros
+#             ## botones.
+#             order_reverse True
 
-            ## El nombre de la pagina, se puede editar haciendo clic en el
-            ## botón.
-            button:
-                style "page_label"
+#             ## El nombre de la pagina, se puede editar haciendo clic en el
+#             ## botón.
+#             button:
+#                 style "page_label"
 
-                key_events True
-                xalign 0.5
-                action page_name_value.Toggle()
+#                 key_events True
+#                 xalign 0.5
+#                 action page_name_value.Toggle()
 
-                input:
-                    style "page_label_text"
-                    value page_name_value
+#                 input:
+#                     style "page_label_text"
+#                     value page_name_value
 
-            ## La cuadrícula de huecos de guardado.
-            grid gui.file_slot_cols gui.file_slot_rows:
-                style_prefix "slot"
+#             ## La cuadrícula de huecos de guardado.
+#             grid gui.file_slot_cols gui.file_slot_rows:
+#                 style_prefix "slot"
 
-                xalign 0.5
-                yalign 0.5
+#                 xalign 0.5
+#                 yalign 0.5
 
-                spacing gui.slot_spacing
+#                 spacing gui.slot_spacing
 
-                for i in range(gui.file_slot_cols * gui.file_slot_rows):
+#                 for i in range(gui.file_slot_cols * gui.file_slot_rows):
 
-                    $ slot = i + 1
+#                     $ slot = i + 1
 
-                    button:
-                        action FileAction(slot)
+#                     button:
+#                         action FileAction(slot)
 
-                        has vbox
+#                         has vbox
 
-                        add FileScreenshot(slot) xalign 0.5
+#                         add FileScreenshot(slot) xalign 0.5
 
-                        text FileTime(slot, format=_("{#file_time}%A, %d de %B %Y, %H:%M"), empty=_("vacío")):
-                            style "slot_time_text"
+#                         text FileTime(slot, format=_("{#file_time}%A, %d de %B %Y, %H:%M"), empty=_("vacío")):
+#                             style "slot_time_text"
 
-                        text FileSaveName(slot):
-                            style "slot_name_text"
+#                         text FileSaveName(slot):
+#                             style "slot_name_text"
 
-                        key "save_delete" action FileDelete(slot)
+#                         key "save_delete" action FileDelete(slot)
 
-            ## Botones de acceso a otras páginas
-            vbox:
-                style_prefix "page"
+#             ## Botones de acceso a otras páginas
+#             vbox:
+#                 style_prefix "page"
 
-                xalign 0.5
-                yalign 1.0
+#                 xalign 0.5
+#                 yalign 1.0
 
-                hbox:
-                    xalign 0.5
+#                 hbox:
+#                     xalign 0.5
 
-                    spacing gui.page_spacing
+#                     spacing gui.page_spacing
 
-                    textbutton _("<") action FilePagePrevious()
-                    key "save_page_prev" action FilePagePrevious()
+#                     textbutton _("<") action FilePagePrevious()
+#                     key "save_page_prev" action FilePagePrevious()
 
-                    if config.has_autosave:
-                        textbutton _("{#auto_page}A") action FilePage("auto")
+#                     if config.has_autosave:
+#                         textbutton _("{#auto_page}A") action FilePage("auto")
 
-                    if config.has_quicksave:
-                        textbutton _("{#quick_page}R") action FilePage("quick")
+#                     if config.has_quicksave:
+#                         textbutton _("{#quick_page}R") action FilePage("quick")
 
-                    ## range(1, 10) da los números del 1 al 9.
-                    for page in range(1, 10):
-                        textbutton "[page]" action FilePage(page)
+#                     ## range(1, 10) da los números del 1 al 9.
+#                     for page in range(1, 10):
+#                         textbutton "[page]" action FilePage(page)
 
-                    textbutton _(">") action FilePageNext()
-                    key "save_page_next" action FilePageNext()
+#                     textbutton _(">") action FilePageNext()
+#                     key "save_page_next" action FilePageNext()
 
-                if config.has_sync:
-                    if CurrentScreenName() == "save":
-                        textbutton _("Subir Sync"):
-                            action UploadSync()
-                            xalign 0.5
-                    else:
-                        textbutton _("Descargar Sync"):
-                            action DownloadSync()
-                            xalign 0.5
+#                 if config.has_sync:
+#                     if CurrentScreenName() == "save":
+#                         textbutton _("Subir Sync"):
+#                             action UploadSync()
+#                             xalign 0.5
+#                     else:
+#                         textbutton _("Descargar Sync"):
+#                             action DownloadSync()
+#                             xalign 0.5
 
 
-style page_label is gui_label
-style page_label_text is gui_label_text
-style page_button is gui_button
-style page_button_text is gui_button_text
+# style page_label is gui_label
+# style page_label_text is gui_label_text
+# style page_button is gui_button
+# style page_button_text is gui_button_text
 
-style slot_button is gui_button
-style slot_button_text is gui_button_text
-style slot_time_text is slot_button_text
-style slot_name_text is slot_button_text
+# style slot_button is gui_button
+# style slot_button_text is gui_button_text
+# style slot_time_text is slot_button_text
+# style slot_name_text is slot_button_text
 
-style page_label:
-    xpadding 75
-    ypadding 5
+# style page_label:
+#     xpadding 75
+#     ypadding 5
 
-style page_label_text:
-    textalign 0.5
-    layout "subtitle"
-    hover_color gui.hover_color
+# style page_label_text:
+#     textalign 0.5
+#     layout "subtitle"
+#     hover_color gui.hover_color
 
-style page_button:
-    properties gui.button_properties("page_button")
+# style page_button:
+#     properties gui.button_properties("page_button")
 
-style page_button_text:
-    properties gui.text_properties("page_button")
+# style page_button_text:
+#     properties gui.text_properties("page_button")
 
-style slot_button:
-    properties gui.button_properties("slot_button")
+# style slot_button:
+#     properties gui.button_properties("slot_button")
 
-style slot_button_text:
-    properties gui.text_properties("slot_button")
+# style slot_button_text:
+#     properties gui.text_properties("slot_button")
 
 
-## Pantalla de preferencias ####################################################
-##
-## La pantalla de preferencias permite al jugador configurar el juego a su
-## gusto.
-##
-## https://www.renpy.org/doc/html/screen_special.html#preferences
+# ## Pantalla de preferencias ####################################################
+# ##
+# ## La pantalla de preferencias permite al jugador configurar el juego a su
+# ## gusto.
+# ##
+# ## https://www.renpy.org/doc/html/screen_special.html#preferences
 
-screen preferences():
+# screen preferences():
 
-    tag menu
+#     tag menu
 
-    use game_menu(_("Opciones"), scroll="viewport"):
+#     use game_menu(_("Opciones"), scroll="viewport"):
 
-        vbox:
+#         vbox:
 
-            hbox:
-                box_wrap True
+#             hbox:
+#                 box_wrap True
 
-                if renpy.variant("pc") or renpy.variant("web"):
+#                 if renpy.variant("pc") or renpy.variant("web"):
 
-                    vbox:
-                        style_prefix "radio"
-                        label _("Pantalla")
-                        textbutton _("Ventana") action Preference("display", "window")
-                        textbutton _("Pantalla completa") action Preference("display", "fullscreen")
+#                     vbox:
+#                         style_prefix "radio"
+#                         label _("Pantalla")
+#                         textbutton _("Ventana") action Preference("display", "window")
+#                         textbutton _("Pantalla completa") action Preference("display", "fullscreen")
 
-                vbox:
-                    style_prefix "check"
-                    label _("Saltar")
-                    textbutton _("Texto no visto") action Preference("skip", "toggle")
-                    textbutton _("Tras elecciones") action Preference("after choices", "toggle")
-                    textbutton _("Transiciones") action InvertSelected(Preference("transitions", "toggle"))
+#                 vbox:
+#                     style_prefix "check"
+#                     label _("Saltar")
+#                     textbutton _("Texto no visto") action Preference("skip", "toggle")
+#                     textbutton _("Tras elecciones") action Preference("after choices", "toggle")
+#                     textbutton _("Transiciones") action InvertSelected(Preference("transitions", "toggle"))
 
-                ## Aquí se pueden añadir 'vboxes' adicionales del tipo
-                ## "radio_pref" o "check_pref" para nuevas preferencias.
+#                 ## Aquí se pueden añadir 'vboxes' adicionales del tipo
+#                 ## "radio_pref" o "check_pref" para nuevas preferencias.
 
-            null height (4 * gui.pref_spacing)
+#             null height (4 * gui.pref_spacing)
 
-            hbox:
-                style_prefix "slider"
-                box_wrap True
+#             hbox:
+#                 style_prefix "slider"
+#                 box_wrap True
 
-                vbox:
+#                 vbox:
 
-                    label _("Veloc. texto")
+#                     label _("Veloc. texto")
 
-                    bar value Preference("text speed")
+#                     bar value Preference("text speed")
 
-                    label _("Veloc. autoavance")
+#                     label _("Veloc. autoavance")
 
-                    bar value Preference("auto-forward time")
+#                     bar value Preference("auto-forward time")
 
-                vbox:
+#                 vbox:
 
-                    if config.has_music:
-                        label _("Volumen música")
+#                     if config.has_music:
+#                         label _("Volumen música")
 
-                        hbox:
-                            bar value Preference("music volume")
+#                         hbox:
+#                             bar value Preference("music volume")
 
-                    if config.has_sound:
+#                     if config.has_sound:
 
-                        label _("Volumen sonido")
+#                         label _("Volumen sonido")
 
-                        hbox:
-                            bar value Preference("sound volume")
+#                         hbox:
+#                             bar value Preference("sound volume")
 
-                            if config.sample_sound:
-                                textbutton _("Prueba") action Play("sound", config.sample_sound)
+#                             if config.sample_sound:
+#                                 textbutton _("Prueba") action Play("sound", config.sample_sound)
 
 
-                    if config.has_voice:
-                        label _("Volumen voz")
+#                     if config.has_voice:
+#                         label _("Volumen voz")
 
-                        hbox:
-                            bar value Preference("voice volume")
+#                         hbox:
+#                             bar value Preference("voice volume")
 
-                            if config.sample_voice:
-                                textbutton _("Prueba") action Play("voice", config.sample_voice)
+#                             if config.sample_voice:
+#                                 textbutton _("Prueba") action Play("voice", config.sample_voice)
 
-                    if config.has_music or config.has_sound or config.has_voice:
-                        null height gui.pref_spacing
+#                     if config.has_music or config.has_sound or config.has_voice:
+#                         null height gui.pref_spacing
 
-                        textbutton _("Silenciar todo"):
-                            action Preference("all mute", "toggle")
-                            style "mute_all_button"
+#                         textbutton _("Silenciar todo"):
+#                             action Preference("all mute", "toggle")
+#                             style "mute_all_button"
 
 
-style pref_label is gui_label
-style pref_label_text is gui_label_text
-style pref_vbox is vbox
+# style pref_label is gui_label
+# style pref_label_text is gui_label_text
+# style pref_vbox is vbox
 
-style radio_label is pref_label
-style radio_label_text is pref_label_text
-style radio_button is gui_button
-style radio_button_text is gui_button_text
-style radio_vbox is pref_vbox
+# style radio_label is pref_label
+# style radio_label_text is pref_label_text
+# style radio_button is gui_button
+# style radio_button_text is gui_button_text
+# style radio_vbox is pref_vbox
 
-style check_label is pref_label
-style check_label_text is pref_label_text
-style check_button is gui_button
-style check_button_text is gui_button_text
-style check_vbox is pref_vbox
+# style check_label is pref_label
+# style check_label_text is pref_label_text
+# style check_button is gui_button
+# style check_button_text is gui_button_text
+# style check_vbox is pref_vbox
 
-style slider_label is pref_label
-style slider_label_text is pref_label_text
-style slider_slider is gui_slider
-style slider_button is gui_button
-style slider_button_text is gui_button_text
-style slider_pref_vbox is pref_vbox
+# style slider_label is pref_label
+# style slider_label_text is pref_label_text
+# style slider_slider is gui_slider
+# style slider_button is gui_button
+# style slider_button_text is gui_button_text
+# style slider_pref_vbox is pref_vbox
 
-style mute_all_button is check_button
-style mute_all_button_text is check_button_text
+# style mute_all_button is check_button
+# style mute_all_button_text is check_button_text
 
-style pref_label:
-    top_margin gui.pref_spacing
-    bottom_margin 3
+# style pref_label:
+#     top_margin gui.pref_spacing
+#     bottom_margin 3
 
-style pref_label_text:
-    yalign 1.0
+# style pref_label_text:
+#     yalign 1.0
 
-style pref_vbox:
-    xsize 338
+# style pref_vbox:
+#     xsize 338
 
-style radio_vbox:
-    spacing gui.pref_button_spacing
+# style radio_vbox:
+#     spacing gui.pref_button_spacing
 
-style radio_button:
-    properties gui.button_properties("radio_button")
-    foreground "gui/button/radio_[prefix_]foreground.png"
+# style radio_button:
+#     properties gui.button_properties("radio_button")
+#     foreground "gui/button/radio_[prefix_]foreground.png"
 
-style radio_button_text:
-    properties gui.text_properties("radio_button")
+# style radio_button_text:
+#     properties gui.text_properties("radio_button")
 
-style check_vbox:
-    spacing gui.pref_button_spacing
+# style check_vbox:
+#     spacing gui.pref_button_spacing
 
-style check_button:
-    properties gui.button_properties("check_button")
-    foreground "gui/button/check_[prefix_]foreground.png"
+# style check_button:
+#     properties gui.button_properties("check_button")
+#     foreground "gui/button/check_[prefix_]foreground.png"
 
-style check_button_text:
-    properties gui.text_properties("check_button")
+# style check_button_text:
+#     properties gui.text_properties("check_button")
 
-style slider_slider:
-    xsize 525
+# style slider_slider:
+#     xsize 525
 
-style slider_button:
-    properties gui.button_properties("slider_button")
-    yalign 0.5
-    left_margin 15
+# style slider_button:
+#     properties gui.button_properties("slider_button")
+#     yalign 0.5
+#     left_margin 15
 
-style slider_button_text:
-    properties gui.text_properties("slider_button")
+# style slider_button_text:
+#     properties gui.text_properties("slider_button")
 
-style slider_vbox:
-    xsize 675
+# style slider_vbox:
+#     xsize 675
 
 
 ## Pantalla de historial #######################################################
@@ -894,6 +894,7 @@ screen history():
     ## Evita la predicción de esta pantalla, que podría ser demasiado grande.
     predict False
 
+    # TODO: sacar el USE
     use game_menu(_("Historial"), scroll=("vpgrid" if gui.history_height else "viewport"), yinitial=1.0, spacing=gui.history_spacing):
 
         style_prefix "history"
@@ -970,165 +971,165 @@ style history_label_text:
     xalign 0.5
 
 
-## Pantalla de ayuda ###########################################################
-##
-## Una pantalla que da información sobre el uso del teclado y el ratón. Usa
-## otras pantallas con el contenido de la ayuda ('keyboard_help', 'mouse_help',
-## y 'gamepad_help').
+# ## Pantalla de ayuda ###########################################################
+# ##
+# ## Una pantalla que da información sobre el uso del teclado y el ratón. Usa
+# ## otras pantallas con el contenido de la ayuda ('keyboard_help', 'mouse_help',
+# ## y 'gamepad_help').
 
-screen help():
+# screen help():
 
-    tag menu
+#     tag menu
 
-    default device = "keyboard"
+#     default device = "keyboard"
 
-    use game_menu(_("Ayuda"), scroll="viewport"):
+#     use game_menu(_("Ayuda"), scroll="viewport"):
 
-        style_prefix "help"
+#         style_prefix "help"
 
-        vbox:
-            spacing 23
+#         vbox:
+#             spacing 23
 
-            hbox:
+#             hbox:
 
-                textbutton _("Teclado") action SetScreenVariable("device", "keyboard")
-                textbutton _("Ratón") action SetScreenVariable("device", "mouse")
+#                 textbutton _("Teclado") action SetScreenVariable("device", "keyboard")
+#                 textbutton _("Ratón") action SetScreenVariable("device", "mouse")
 
-                if GamepadExists():
-                    textbutton _("Mando") action SetScreenVariable("device", "gamepad")
+#                 if GamepadExists():
+#                     textbutton _("Mando") action SetScreenVariable("device", "gamepad")
 
-            if device == "keyboard":
-                use keyboard_help
-            elif device == "mouse":
-                use mouse_help
-            elif device == "gamepad":
-                use gamepad_help
-
-
-screen keyboard_help():
-
-    hbox:
-        label _("Intro")
-        text _("Avanza el diálogo y activa la interfaz.")
-
-    hbox:
-        label _("Espacio")
-        text _("Avanza el diálogo sin seleccionar opciones.")
-
-    hbox:
-        label _("Teclas de flecha")
-        text _("Navega la interfaz.")
-
-    hbox:
-        label _("Escape")
-        text _("Accede al menú del juego.")
-
-    hbox:
-        label _("Ctrl")
-        text _("Salta el diálogo mientras se presiona.")
-
-    hbox:
-        label _("Tabulador")
-        text _("Activa/desactiva el salto de diálogo.")
-
-    hbox:
-        label _("Av. pág.")
-        text _("Retrocede al diálogo anterior.")
-
-    hbox:
-        label _("Re. pág.")
-        text _("Avanza hacia el diálogo siguiente.")
-
-    hbox:
-        label "H"
-        text _("Oculta la interfaz.")
-
-    hbox:
-        label "S"
-        text _("Captura la pantalla.")
-
-    hbox:
-        label "V"
-        text _("Activa/desactiva la asistencia por {a=https://www.renpy.org/l/voicing}voz-automática{/a}.")
-
-    hbox:
-        label "Shift+A"
-        text _("Abre el menú de accesibilidad.")
+#             if device == "keyboard":
+#                 use keyboard_help
+#             elif device == "mouse":
+#                 use mouse_help
+#             elif device == "gamepad":
+#                 use gamepad_help
 
 
-screen mouse_help():
+# screen keyboard_help():
 
-    hbox:
-        label _("Clic izquierdo")
-        text _("Avanza el diálogo y activa la interfaz.")
+#     hbox:
+#         label _("Intro")
+#         text _("Avanza el diálogo y activa la interfaz.")
 
-    hbox:
-        label _("Clic medio")
-        text _("Oculta la interfaz.")
+#     hbox:
+#         label _("Espacio")
+#         text _("Avanza el diálogo sin seleccionar opciones.")
 
-    hbox:
-        label _("Clic derecho")
-        text _("Accede al menú del juego.")
+#     hbox:
+#         label _("Teclas de flecha")
+#         text _("Navega la interfaz.")
 
-    hbox:
-        label _("Rueda del ratón arriba")
-        text _("Retrocede al diálogo anterior.")
+#     hbox:
+#         label _("Escape")
+#         text _("Accede al menú del juego.")
 
-    hbox:
-        label _("Rueda del ratón abajo")
-        text _("Avanza hacia el diálogo siguiente.")
+#     hbox:
+#         label _("Ctrl")
+#         text _("Salta el diálogo mientras se presiona.")
+
+#     hbox:
+#         label _("Tabulador")
+#         text _("Activa/desactiva el salto de diálogo.")
+
+#     hbox:
+#         label _("Av. pág.")
+#         text _("Retrocede al diálogo anterior.")
+
+#     hbox:
+#         label _("Re. pág.")
+#         text _("Avanza hacia el diálogo siguiente.")
+
+#     hbox:
+#         label "H"
+#         text _("Oculta la interfaz.")
+
+#     hbox:
+#         label "S"
+#         text _("Captura la pantalla.")
+
+#     hbox:
+#         label "V"
+#         text _("Activa/desactiva la asistencia por {a=https://www.renpy.org/l/voicing}voz-automática{/a}.")
+
+#     hbox:
+#         label "Shift+A"
+#         text _("Abre el menú de accesibilidad.")
 
 
-screen gamepad_help():
+# screen mouse_help():
 
-    hbox:
-        label _("Gatillo derecho\nA/Botón inferior")
-        text _("Avanza el diálogo y activa la interfaz.")
+#     hbox:
+#         label _("Clic izquierdo")
+#         text _("Avanza el diálogo y activa la interfaz.")
 
-    hbox:
-        label _("Gatillo izquierdo\nBotón sup. frontal izq.")
-        text _("Retrocede al diálogo anterior.")
+#     hbox:
+#         label _("Clic medio")
+#         text _("Oculta la interfaz.")
 
-    hbox:
-        label _("Botón sup. frontal der.")
-        text _("Avanza hacia el diálogo siguiente.")
+#     hbox:
+#         label _("Clic derecho")
+#         text _("Accede al menú del juego.")
 
-    hbox:
-        label _("D-Pad, Sticks")
-        text _("Navega la interfaz.")
+#     hbox:
+#         label _("Rueda del ratón arriba")
+#         text _("Retrocede al diálogo anterior.")
 
-    hbox:
-        label _("Inicio, Guía, B/Botón Derecho")
-        text _("Accede al menú del juego.")
-
-    hbox:
-        label _("Y/Botón superior")
-        text _("Oculta la interfaz.")
-
-    textbutton _("Calibrar") action GamepadCalibrate()
+#     hbox:
+#         label _("Rueda del ratón abajo")
+#         text _("Avanza hacia el diálogo siguiente.")
 
 
-style help_button is gui_button
-style help_button_text is gui_button_text
-style help_label is gui_label
-style help_label_text is gui_label_text
-style help_text is gui_text
+# screen gamepad_help():
 
-style help_button:
-    properties gui.button_properties("help_button")
-    xmargin 12
+#     hbox:
+#         label _("Gatillo derecho\nA/Botón inferior")
+#         text _("Avanza el diálogo y activa la interfaz.")
 
-style help_button_text:
-    properties gui.text_properties("help_button")
+#     hbox:
+#         label _("Gatillo izquierdo\nBotón sup. frontal izq.")
+#         text _("Retrocede al diálogo anterior.")
 
-style help_label:
-    xsize 375
-    right_padding 30
+#     hbox:
+#         label _("Botón sup. frontal der.")
+#         text _("Avanza hacia el diálogo siguiente.")
 
-style help_label_text:
-    size gui.text_size
-    xalign 1.0
-    textalign 1.0
+#     hbox:
+#         label _("D-Pad, Sticks")
+#         text _("Navega la interfaz.")
+
+#     hbox:
+#         label _("Inicio, Guía, B/Botón Derecho")
+#         text _("Accede al menú del juego.")
+
+#     hbox:
+#         label _("Y/Botón superior")
+#         text _("Oculta la interfaz.")
+
+#     textbutton _("Calibrar") action GamepadCalibrate()
+
+
+# style help_button is gui_button
+# style help_button_text is gui_button_text
+# style help_label is gui_label
+# style help_label_text is gui_label_text
+# style help_text is gui_text
+
+# style help_button:
+#     properties gui.button_properties("help_button")
+#     xmargin 12
+
+# style help_button_text:
+#     properties gui.text_properties("help_button")
+
+# style help_label:
+#     xsize 375
+#     right_padding 30
+
+# style help_label_text:
+#     size gui.text_size
+#     xalign 1.0
+#     textalign 1.0
 
 
 
