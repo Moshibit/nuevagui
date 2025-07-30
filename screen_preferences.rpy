@@ -47,13 +47,24 @@ screen preferences():
             # elif tab == "adult": # TODO activar esta parte
             #     use adult_opt
 
+
+# TODO: botones--> on/off, on/neutra/off, radio, check, combo_box, sliders
+
 screen grafics_opt():
+        # TODO: feats:
+        # * pantalla tamaños ?
+        # * Activar / Desactivar particulas
+        # * BG del main menu
+        # * skin de interface
+        # * Anti-aliasing ??
+        # * Vsync ??
+        # * fps limite  ??
+        # * lived2
+        # * efectos
+        # * flasheos o cambios de colores rapidos (accesibilidad)
+        # * temblores (accesibilidad)
+
     vbox:
-        text "algo va aquí _G_"
-
-screen text_opt():
-
-    hbox:
         box_wrap True
 
         if renpy.variant("pc") or renpy.variant("web"):
@@ -63,6 +74,24 @@ screen text_opt():
                 label _("Pantalla")
                 textbutton _("Ventana") action Preference("display", "window")
                 textbutton _("Pantalla completa") action Preference("display", "fullscreen")
+
+        text "algo va aquí _G_"
+        
+
+screen text_opt():
+    # TODO: feats:
+    # * tamaño (accesibilidad)
+    # * fuentes (accesibilidad)
+    # * velocidad
+    # * color  -- visto, ya visto, otros? --
+    # * opasidad del la ventana de texto
+    # subtitulos(cinematicas) / accesibilidad
+    # saltos y omisiones
+    # saltos de eleccione
+    # saltos de esccenas
+
+    hbox:
+        box_wrap True
 
         vbox:
             style_prefix "check"
@@ -129,14 +158,72 @@ screen text_opt():
 screen audio_opt():
     vbox:
         text "algo va aquí _A_"
+        # TODO: feats:
+        # * volume maestro
+        # * volumen musica
+        # * volumen fsx
+        # * volumen ambiental
+        # * salida de audio ??
 
 screen voice_opt():
     vbox:
         text "algo va aquí _V_"
+        # TODO : feats:
+        # * Volumen de voces
+        # * texto a  vox
+        #  * opciones de texto y voz
+        # * voz del sistema o vocesrandom
+
 
 screen save_load_opt():
     vbox:
         text "algo va aquí _S_"
+        # TODO : feats:
+        # * autosave
+        # * salvados al salir
+        # reanudar automatico
+        # preguntas sobre salvar en momentos criticos
+
+# 
+
+# OPCIONES DE GAME PLAY # TODO: va en otro lado
+# dificultad, tiempo en elecciones, dificultad de puzzles, consejos en puzzles
+# indicadores de interaccion en imagemaps
+# tutoriales
+# confirmaciones dde si o no en promts del sistema
+# facilitar u omitir quick time events
+# Passwords y desbloqueso
+# marcas en las elecciones, ayudas, ya leejidas, 
+# reset de persistentes.
+
+# OPCIONES DE accesiblidad # TODO: va en otro lado
+# daltonimsmo
+# subtitulos
+# alto contraste
+# indicadores visuales,
+# shake
+# 
+
+# OPCIONES DE dlc18 # TODO: va en otro lado
+# activar des activar contenido
+# intensidad
+# filtros de contenido
+
+
+# TODO opciones de partida. una vez por partida
+# filtros contenido permitido
+# 
+
+# TODO : OPCIONES DE CONTROLES
+
+# TODO IDIOMAS, texto y voz, subtitulos,
+
+
+# EXTRAS. Galerias, cg, bg, bgm, logros, creditos, replays
+
+
+# BOTON Restaurar por pestaña
+# ventana de preview de texto
 
 
 style pref_label is gui_label
