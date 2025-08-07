@@ -1,4 +1,4 @@
-﻿## Pantalla de preferencias ####################################################
+## Pantalla de preferencias ####################################################
 ##
 ## La pantalla de preferencias permite al jugador configurar el juego a su
 ## gusto.
@@ -14,6 +14,9 @@ screen preferences():
     use game_menu(_("Opciones"), scroll="viewport", menu_type="game"):
 
         vbox:
+            xpos 50
+            ypos 5
+            spacing 15
         
             hbox:
                 spacing 50
@@ -33,19 +36,20 @@ screen preferences():
                 # extras etc etc etc etc
                 # enotro otro lado opciones sobre el gameplay y no sobre modo vn
 
-
-            if tab == "grafics":
-                use grafics_opt
-            elif tab == "text":
-                use text_opt
-            elif tab == "audio":
-                use audio_opt
-            elif tab == "voice":
-                use voice_opt
-            elif tab == "save_load":
-                use save_load_opt
-            # elif tab == "adult": # TODO activar esta parte
-            #     use adult_opt
+            hbox:
+                
+                if tab == "grafics":
+                    use grafics_opt
+                elif tab == "text":
+                    use text_opt
+                elif tab == "audio":
+                    use audio_opt
+                elif tab == "voice":
+                    use voice_opt
+                elif tab == "save_load":
+                    use save_load_opt
+                # elif tab == "adult": # TODO activar esta parte
+                #     use adult_opt
 
 
 # TODO: botones--> on/off, on/neutra/off, radio, check, combo_box, sliders
@@ -74,6 +78,11 @@ screen grafics_opt():
                 label _("Pantalla")
                 textbutton _("Ventana") action Preference("display", "window")
                 textbutton _("Pantalla completa") action Preference("display", "fullscreen")
+    
+    null width (4 * gui.pref_button_spacing)
+
+    vbox:
+        box_wrap True
 
         text "algo va aquí _G_"
         
@@ -85,12 +94,31 @@ screen text_opt():
     # * velocidad
     # * color  -- visto, ya visto, otros? --
     # * opasidad del la ventana de texto
-    # subtitulos(cinematicas) / accesibilidad
-    # saltos y omisiones
-    # saltos de eleccione
-    # saltos de esccenas
+    # * subtitulos(cinematicas) / accesibilidad
+    # * saltos y omisiones
+    # * saltos de eleccione
+    # * saltos de esccenas
 
-    hbox:
+    
+    vbox:
+        box_wrap True
+
+        vbox:
+            style_prefix "slider"
+            
+            
+            label _("Veloc. texto")
+
+            bar value Preference("text speed")
+
+            label _("Veloc. autoavance")
+
+            bar value Preference("auto-forward time")
+
+    null width (4 * gui.pref_spacing)
+
+
+    vbox:
         box_wrap True
 
         vbox:
@@ -103,23 +131,24 @@ screen text_opt():
         ## Aquí se pueden añadir 'vboxes' adicionales del tipo
         ## "radio_pref" o "check_pref" para nuevas preferencias.
 
-    null height (4 * gui.pref_spacing)
 
-    hbox:
-        style_prefix "slider"
+
+
+
+
+screen audio_opt():
+    # TODO: feats:
+        # * volume maestro
+        # * volumen musica
+        # * volumen fsx
+        # * volumen ambiental
+        # * salida de audio ??
+    vbox:
         box_wrap True
-
+        
         vbox:
-
-            label _("Veloc. texto")
-
-            bar value Preference("text speed")
-
-            label _("Veloc. autoavance")
-
-            bar value Preference("auto-forward time")
-
-        vbox:
+            style_prefix "slider"
+            #box_wrap True
 
             if config.has_music:
                 label _("Volumen música")
@@ -154,35 +183,53 @@ screen text_opt():
                     action Preference("all mute", "toggle")
                     style "mute_all_button"
 
+    null width (4 * gui.pref_spacing)
 
-screen audio_opt():
     vbox:
-        text "algo va aquí _A_"
-        # TODO: feats:
-        # * volume maestro
-        # * volumen musica
-        # * volumen fsx
-        # * volumen ambiental
-        # * salida de audio ??
+        box_wrap True
+        
+        text "algo va aquí _A_ 2"
 
 screen voice_opt():
-    vbox:
-        text "algo va aquí _V_"
-        # TODO : feats:
+
+    # TODO : feats:
         # * Volumen de voces
         # * texto a  vox
         #  * opciones de texto y voz
         # * voz del sistema o vocesrandom
 
+    vbox:
+        box_wrap True
+
+        text "algo va aquí _V_ 1"
+
+    null width (4 * gui.pref_spacing)
+
+
+    vbox:
+        box_wrap True
+
+        text "algo va aquí _V_ 2"
+
 
 screen save_load_opt():
-    vbox:
-        text "algo va aquí _S_"
-        # TODO : feats:
+    # TODO : feats:
         # * autosave
         # * salvados al salir
         # reanudar automatico
         # preguntas sobre salvar en momentos criticos
+
+    vbox:
+        box_wrap True
+
+        text "algo va aquí _S_ 1"
+
+    null width (4 * gui.pref_spacing)
+
+    vbox:
+        box_wrap True
+
+        text "algo va aquí _S_ 2"
 
 # 
 
@@ -219,7 +266,8 @@ screen save_load_opt():
 # TODO IDIOMAS, texto y voz, subtitulos,
 
 
-# EXTRAS. Galerias, cg, bg, bgm, logros, creditos, replays
+# EXTRAS. Galerias, cg, bg, bgm, logros, creditos, replays, developer notes, 
+# porcentaje de texto completado, desbloqeable y coleccionables y sus porcentajes, finales 
 
 
 # BOTON Restaurar por pestaña
