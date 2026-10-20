@@ -1,16 +1,19 @@
-# Ren'Py automatically loads all script files ending with .rpy. To use this
-# file, define a label and jump to it from another file.
-
-define gui.interface_text_outlines = [(2, "#000000cc", 0, 0)]
-
-## Main Menu Configuration ####################################################
+## Menú principal y menús del juego ############################################
 ##
-## Controla la apariencia de Mwnú Principals
+## Controla la apariencia del menú principal y menús del juego
 
 ## Configuración Básica
-define gui.main_menu_logo = "gui/game_logo.png"
-define gui.main_menu_logo_position = (0.5, 0.6) 
+## Imágenes del menú principal y menús del juego.
+define gui.main_menu_background = "gui/main_menu.png"
+define gui.game_menu_background = "gui/game_menu.png"
 
+## [*] Logo del juego
+define gui.main_menu_logo = "gui/game_logo.png"
+# define gui.main_menu_logo_position = (0.5, 0.6) [X]
+define gui.main_menu_logo_xaling = 0.5
+define gui.main_menu_logo_ypos = 0.6
+
+## [*] Navi
 ## Estilos de textos del menu principal
 define gui.navi_button_text_size = 26
 define gui.navi_button_text_xalign = 0.5
@@ -20,11 +23,12 @@ define gui.version_text_size = 18
 define gui.version_text_outlines = [(1, "#000000aa", 0, 0)]
 
 ## Posiciones de texto informativo
-define gui.main_menu_version_position = (20, -20)
-define gui.main_menu_copyright_position = (-20, -20)
+define gui.main_menu_version_position = (-20, -20)
+define gui.main_menu_copyright_position = (20, -20)
 
 ## Estilos de botones principales
-define gui.main_menu_navi_orientation = "horizontal" #OPTIONS: "horizontal" o "vertical"
+define gui.main_menu_navi_orientation = "horizontal" 
+# OPTIONS: "horizontal" o "vertical"
 
 define gui.main_menu_navi_hposition = (0.5, 0.9) # (xalign, yalign)
 define gui.navi_buttons_hspacing = 30
@@ -32,30 +36,26 @@ define gui.navi_buttons_hspacing = 30
 define gui.main_menu_navi_vposition = (0.05, 0.5) # (xalign, yalign)
 define gui.navi_buttons_vspacing = 2
 
-## NOTE: Ejemplos de ajustes recomendados 
-## Horizontal centrado inferiro -> position (0.5, 0.9), spacing 30
-## Horizontal abajo a la izquierda -> position (0.1, 0.9), spacing 30
-## Vertical centrado a la izquierda -> position (0.1, 0.5), spacing 2 
-## Centrado -> position (0.5, 0.5) spacing 30 Hor / 2 Ver
+define gui.navi_button_text_size = 26 # [x]
+define gui.navi_button_text_xalign = 0.5 # [x]
 
-## Configuración de submenús
+    ## NOTE: Ejemplos de ajustes recomendados 
+    ##                                       position  / spacing
+    ##                                 (xalign, yalign)
+    ## Horizontal inferior centrado       -> (0.5, 0.9),  30
+    ## Horizontal inferiro a la izquierda -> (0.1, 0.9),  30
+    ## Horizontal inferiro a la derecha   -> (0.9, 0.9),  30
+    ## Vertical centrado                  -> (0.5, 0.5),  30 Hor / 2 Ver
+    ## Vertical a la izquierda            -> (0.1, 0.5),  2 
+    ## Vertical a la derecha              -> (0.9, 0.5),  2 
+
+## Textos al pie
+define gui.footer_text_size = 20
+# define gui.footer_text_outlines = [(1, "#000000aa", 0, 0)]
+
+## Submenús
 define gui.submenu_hspacing = 30
 define gui.submenu_vspacing = 10
 define gui.submenu_padding = (25, 25)
-
 define gui.submenu_button_text_size = 24
 define gui.submenu_button_text_xalign = 0.0
-
-
-## Variables de build (TEMPORAL - mover a build.rpy) ##
-define gui.year = 2025
-define gui.developer = "Developer"
-define gui.edition = "Estandar" # OPTIONS: [Estandar, Trial, Demo, Premium, Regular, Complete, First Press, Press, Desarrollo]
-define gui.rated = "All"  # OPTIONS: Censored, 18+, 15+, All ages
-# market # OPTIONS:  Steam, itch.io, None
-# platform # OPTIONS: PC, Linux, Macintosh, Windows
-
-# TODO: esta sección deberia ser creada en un rpy al momento de hacer build de juego. 
-# esta información quizas deberia estar en un documento build.rpy en un storage build.variable en lugar del storage gui.variable
-
-

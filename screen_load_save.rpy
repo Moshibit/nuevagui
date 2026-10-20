@@ -1,4 +1,13 @@
-﻿## Pantallas de carga y grabación ##############################################
+﻿################################################################################
+## Inicialización
+################################################################################
+
+init offset = -1
+
+
+################################################################################
+
+## Pantallas de carga y grabación ##############################################
 ##
 ## Estas pantallas permiten al jugador grabar el juego y cargarlo de nuevo. Como
 ## comparten casi todos los elementos, ambas están implementadas en una tercera
@@ -126,6 +135,7 @@ style slot_name_text is slot_button_text
 style page_label:
     xpadding 75
     ypadding 5
+    xalign 0.5
 
 style page_label_text:
     textalign 0.5

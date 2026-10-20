@@ -1,83 +1,170 @@
-﻿## Pantalla del menú principal #################################################
+﻿################################################################################
+## Inicialización
+################################################################################
+
+init offset = -1
+
+
+################################################################################
+
+## Pantalla del menú principal #################################################
 ##
 ## Usado para mostrar el menú principal cuando Ren'Py arranca.
 ##
 ## https://www.renpy.org/doc/html/screen_special.html#main-menu
 
 screen main_menu():
-    style_prefix "main_menu"
+    style_prefix "main_menu" # [*]
+
+    ## TODO: hacer que el main menu muestre algo si permanece idle
+
+    ## Esto asegura que cualquier otra pantalla de menu es remplazada.
     tag menu
 
-    ## --- Fondo del menú---
+    ## Fondo del menú [*]
     add gui.main_menu_background
+    # TODO cambiar de momento sera un place holder
+    # TODO: hacer un image button que mande a una web
 
-    ## --- Logo del juego (posición configurable) ---
+    ## [*] Logo del juego
     add gui.main_menu_logo:
-        xalign gui.main_menu_logo_position[0] 
-        ypos gui.main_menu_logo_position[1]
+        xalign gui.main_menu_logo_xaling
+        ypos gui.main_menu_logo_ypos
 
-    ## --- información del juegos ---
-    vbox: # Copyright (inferior izquierdo)
-        style_prefix "copyright"
+    ## Este marco vacío oscurece el menu principal.
+    # frame:
+    #     style "main_menu_frame"
 
-        text _("© [gui.year] [gui.developer]. Todos los derechos reservados.")
+    ## La sentencia 'use' incluye otra pantalla dentro de esta. El contenido
+    ## real del menú principal está en la pantalla de navegación.
+    # use navigation
 
-    vbox: # Versión (inferior derecho)
-        style_prefix "version"
-
-        if config.developer:
-            text _("Build de desarrollo"):
-                style "dev_build_text"
-        if gui.show_name:
-            text "[config.name!t]"
-        text _("versión: [config.version]")
-        text _("edición: [gui.edition]")
-        if gui.rated != "All":
-            text _("Clasificación: [gui.rated]")
-        # Mostrar plataforma y mercado si son relevantes
-        if gui.platform != "Multiplataform":
-            text _("Plataforma: [gui.platform]")
-        if gui.market != "General":
-            text _("Distribución: [gui.market]")
-
-    ## --- Botones superiores ---
-    hbox:
-        style_prefix "top_buttons"
-
-        imagebutton:
-            auto "gui/button/mmaccesibility_%s.png"
-            action NullAction() # ShowMenu("accesibility") # TODO: hacer funcionar
-
-        imagebutton:
-            auto "gui/button/mmlanguage_%s.png"
-            action NullAction() #ShowMenu("language") # TODO: hacer funcionar
-
-        imagebutton:
-            auto "gui/button/mmabout_%s.png"
-            action ShowMenu("about")
-
-
-    ## --- Botones principales ---
+    ## [*] Botones principales del menú
     if gui.main_menu_navi_orientation == "horizontal":
         hbox:
             style_prefix "navi"
             style "navi_horizontal"
             use navi_content
 
-    else: # Vertical
+    else: # Si el menú es vertical
+        ## Este marco vacío oscurece el menu principal.
+        frame:
+            style "main_menu_frame"
+        
         vbox:
             style_prefix "navi"
             style "navi_vertical"
             use navi_content
 
-## === Estilos ===
+
+    # Botones superiores [*]
+    hbox:
+        style_prefix "top_buttons"
+
+        imagebutton:
+            auto "gui/button/mmabout_%s.png"
+            action ShowMenu("about")
+
+        imagebutton:
+            auto "gui/button/mmlanguage_%s.png"
+            action NullAction() #ShowMenu("language") # TODO: hacer funcionar
+
+        imagebutton:
+            auto "gui/button/mmaccesibility_%s.png"
+            action NullAction() # ShowMenu("accesibility") # TODO: hacer funcionar
+
+    # if gui.show_name:
+
+    #     vbox:
+    #         style "main_menu_vbox"
+
+    #         text "[config.name!t]":
+    #             style "main_menu_title"
+
+    #         text "[config.version]":
+    #             style "main_menu_version"
+
+    ## Información del juego [*] 
+    if gui.show_name:
+
+        hbox: # Copyright (inferior izquierda)
+            style_prefix "main_menu_footer"
+            # text "© ":
+            #     style "main_menu_footer_emoji"
+            text _("© [gui.developer] [gui.year]. Todos los derechos reservados.")
+
+        vbox: # Versión (inferior derecha)
+            style_prefix "main_menu_footer"
+
+            if gui.show_name:
+                text "[config.name!t]"
+                text _("versión: [config.version]")
+                ## Muestra información si es relevante
+                if gui.edition != "standar":
+                    text _("edición: [gui.edition]")
+                if gui.rated != "all":
+                    text _("clasificación: [gui.rated]")
+                if gui.platform != "multiplataform":
+                    text _("plataforma: [gui.platform]")
+                if gui.market != "general":
+                    text _("distribución: [gui.market]")
+                if config.developer:
+                    text _("Modo desarrollor"):
+                        color "#ff0000"
+
+    ## Información del juego [*] 
+
+
+## Estilos del menú princiapal [*]
 style main_menu_frame is empty
-style main_menu_vbox is vbox
+# style main_menu_vbox is vbox
 style main_menu_text is gui_text
+style main_menu_title is main_menu_text
+# style main_menu_version is main_menu_text
+
+style main_menu_frame:
+    xsize 420
+    yfill True
+
+    background "gui/overlay/main_menu.png"
+
+# style main_menu_vbox:
+#     xalign 1.0
+#     xoffset -30
+#     xmaximum 1200
+#     yalign 1.0
+#     yoffset -30
 
 style main_menu_text:
     properties gui.text_properties("main_menu", accent=True)
 
+style main_menu_title:
+    properties gui.text_properties("title")
+
+# style main_menu_version:
+#     properties gui.text_properties("version")
+
+## [*] Estilos añadidos
+# --- Información del juego
+style main_menu_footer_text is main_menu_text:
+    properties gui.text_properties("footer")
+
+style main_menu_footer_emoji is emoji:
+    take main_menu_footer_text
+    # outlines [ ]
+    
+style main_menu_footer_vbox is vbox:
+    # box_align 1.0
+    xalign 1.0
+    xoffset -20
+    yalign 1.0
+    yoffset -20
+
+style main_menu_footer_hbox is hbox:
+    xalign 0.0
+    xoffset 20
+    yalign 1.0
+    yoffset -20
 
 ## --- Botones superiores
 style top_buttons_hbox:
@@ -85,30 +172,6 @@ style top_buttons_hbox:
     xoffset -20
     ypos 20 
     spacing 10
-
-# --- Información del juego
-style version_vbox is vbox:
-    xalign 0.0
-    xoffset gui.main_menu_version_position[0]
-    yalign 1.0
-    yoffset gui.main_menu_version_position[1]
-
-style version_text is main_menu_text:
-    properties gui.text_properties("version")
-
-style dev_build_text is version_text:
-    color "#ff0000"
-
-style copyright_vbox is vbox:
-    xalign 1.0
-    xoffset gui.main_menu_copyright_position[0]
-    yalign 1.0
-    yoffset gui.main_menu_copyright_position[1]
-
-style copyright_text is version_text:
-    properties gui.text_properties("copyright")
-    xalign 1.0 # text_align 0.0
-
 
 ## --- Navegación principal ---
 style navi_button is gui_button
@@ -144,26 +207,30 @@ style navi_text is main_menu_text:
 # === Pantallas Auxiliares ===
 screen navi_content(): # --- Contenido del navi ---
     vbox: # Iniciar
-        imagebutton:
-            auto "gui/button/mmplay_%s.png"
-            action If(persistent.first_run, Start(), Show("submenu_screen"))
-        textbutton _("Iniciar"):
+        # imagebutton:
+        #     auto "gui/button/mmplay_%s.png"
+        #     action If(persistent.first_run, Start(), Show("submenu_screen"))
+        textbutton "⭐ " + _("Iniciar"):
             action If(persistent.first_run, Start(), Show("submenu_screen"))
     vbox: # Opciones
-        imagebutton:
-            auto "gui/button/mmoptions_%s.png"
-            action ShowMenu("preferences")
-        textbutton _("Opciones") action ShowMenu("preferences")
+        # imagebutton:
+        #     auto "gui/button/mmoptions_%s.png"
+        #     action ShowMenu("preferences")
+        textbutton _("⚙️ Opciones") action ShowMenu("preferences")
     vbox: # Extras
-        imagebutton:
-            auto "gui/button/mmextras_%s.png"
-            action ShowMenu("extras")
-        textbutton _("Extras") action ShowMenu("extras")
+        # imagebutton:
+        #     auto "gui/button/mmextras_%s.png"
+        #     action ShowMenu("extras")
+        textbutton _("🎁 Extras") action ShowMenu("extras")
     vbox: # Salir
-        imagebutton:
-            auto "gui/button/mmexit_%s.png"
-            action Quit()
-        textbutton _("Salir") action Quit()
+        # imagebutton:
+        #     auto "gui/button/mmexit_%s.png"
+        #     action Quit()
+        textbutton _("🚪 Salir") action Quit()
+
+#       ## TODO agregar un boton para sideStories. oculto[debe ser oculto y no desvanecido]  solos al finalizar el juegon
+#       ##      o cambiar el comportamiento de del boton para mostrar un selector de historias.
+
 
 
 screen submenu_screen: # --- Submenús ---
@@ -272,332 +339,3 @@ style submenu_button_text is gui_button_text:
 # Al elegir qué incluir, piensa en lo que tus jugadores disfrutarían más después de terminar la historia principal o mientras exploran diferentes rutas. Un buen apartado de "Extras" puede prolongar la vida útil de tu VN y aumentar la satisfacción del jugador.
 
 
-
-
-################################################################################
-## Principal y Pantalla de menu del juego.
-################################################################################
-
-## Pantalla del menú principal #################################################
-##
-## Usado para mostrar el menú principal cuando Ren'Py arranca.
-##
-## https://www.renpy.org/doc/html/screen_special.html#main-menu
-
-## TODO: hacer que el main menu muestre algo si permanece idle
-
-# screen main_menu():
-
-#     ## Esto asegura que cualquier otra pantalla de menu es remplazada.
-#     tag menu
-
-#     add gui.main_menu_background
-
-#     ## Este marco vacío oscurece el menu principal.
-#     frame:
-#         style "main_menu_frame"
-
-#     ## La sentencia 'use' incluye otra pantalla dentro de esta. El contenido
-#     ## real del menú principal está en la pantalla de navegación.
-#     use navigation
-
-#     ## Logo del juego
-#     # TODO cambiar de momento sera un place holder
-#     # TODO: hacer un image button que mande a una web
-#     #add gui.game_logo:
-#     #    xsize 354 ysize 222 #252*252 o 252*141 o 384*222
-#     #    xalign 0.0 yalign 0.0
-#     #    xoffset 20 yoffset 20
-
-#     ## información de versión
-#     if gui.show_name:
-
-#         vbox:
-
-#             style "main_menu_vbox"
-
-#             text "[config.name!t] [config.version]":
-#                 style "main_menu_textinfo" # "main_menu_title"
-
-#             if persistent.adt:
-#                 text "18+ Edition":
-#                     style "main_menu_textinfo"
-
-#             text "[gui.year] [gui.developer]": # " All Rights Recerved" ## definidos en options.rpy
-#                 style "main_menu_textinfo"
-
-#     # Esto invoca una label al pasar el tiempo.
-#     timer 45.0 action Start("main_menu_wait")
-
-
-# style main_menu_frame is empty
-# style main_menu_vbox is vbox
-# style main_menu_text is gui_text
-# style main_menu_title is main_menu_text
-# style main_menu_version is main_menu_text
-# style main_menu_textinfo is main_menu_version
-
-# style main_menu_frame:
-#     xsize 420 # 280<720, 420<1080
-#     yfill True
-
-#     background "gui/overlay/main_menu.png"
-
-# style main_menu_vbox:
-#     xalign 1.0
-#     xoffset -30 #-20<720, -30<1080
-#     xmaximum 1200 # 800<720, 1200<1080
-#     yalign 1.0
-#     yoffset -30 #-20<720, -30<1080
-
-# style main_menu_text:
-#     properties gui.text_properties("main_menu", accent=True)
-
-# style main_menu_title:
-#     properties gui.text_properties("title")
-
-# style main_menu_version:
-#     properties gui.text_properties("version")
-
-# style main_menu_textinfo:
-#     size 16 #14
-
-
-################################################################################
-## Principal y Pantalla de menu del juego.
-################################################################################
-
-## Pantalla de navegación ######################################################
-##
-## Esta pantalla está incluída en el menú principal y los menús del juego y
-## ofrece navegación a los otros menús y al inicio del juego.
-
-# screen navigation():
-
-#     vbox:
-#         style_prefix "navigation"
-
-#         xpos gui.navigation_xpos
-#         yalign 0.5
-
-#         spacing gui.navigation_spacing
-
-#         if main_menu:
-
-#             textbutton _("Comenzar") action Start()
-
-#             ## TODO agregar un boton para sideStories. oculto[debe ser oculto y no desvanecido]  solos al finalizar el juegon
-#             ##      o cambiar el comportamiento de del boton para mostrar un selector de historias.
-
-#             if renpy.can_load("quitsave"):
-#                 textbutton _("Continuar") action FileLoad("quitsave", slot=True)
-
-#         elif _in_replay:
-
-#             textbutton _("Finaliza repetición") action EndReplay(confirm=True)
-
-#         elif not main_menu:
-
-#             textbutton _("Menú principal") action MainMenu()
-
-#         if not main_menu and not _in_replay:
-
-#             textbutton _("Guardar") action ShowMenu("save")
-
-#         if not _in_replay:
-
-#             textbutton _("Cargar") action ShowMenu("load")
-
-#         null height (2 * gui.pref_spacing)
-
-#         textbutton _("Opciones") action ShowMenu("preferences")
-
-#         # if not main_menu:
-
-#             # textbutton _("Historial") action ShowMenu("history") # TODO retirar? si es asi solo comentar
-
-#             #X textbutton _("Estado") action ShowMenu("stats") ## TODO: hacer. quisas mandar al quick menu
-
-#         # if not main_menu:
-#         #     textbutton _("Enciclopedia") action ShowMenu("wiki_index") # ubicado en wiki.py
-
-#         if main_menu:
-
-#             textbutton _("Extras") action ShowMenu("navigation_extras") ## TODO: completar menus
-
-#             null height (2 * gui.pref_spacing)
-
-#             textbutton _("Acerca de") action ShowMenu("about")
-
-#         if renpy.variant("pc") or (renpy.variant("web") and not renpy.variant("mobile")):
-
-#             ## La ayuda no es necesaria ni relevante en dispositivos móviles.
-#             textbutton _("Ayuda") action ShowMenu("help_s") # original ShowMenu("help") #imagebutton auto "gui/button/help_%s.png" action ShowMenu("help_s")
-
-#             null height (2 * gui.pref_spacing)
-
-#             ## El botón de salida está prohibido en iOS y no es necesario en
-#             ## Android y Web.
-#             textbutton _("Salir") action Quit(confirm=not main_menu)
-
-
-# style navigation_button is gui_button
-# style navigation_button_text is gui_button_text
-
-# style navigation_button:
-#     size_group "navigation"
-#     properties gui.button_properties("navigation_button")
-
-#     #idle_background Frame("gui/button/menu_idle_background.png", 12, 12) # TODO este par deberia ser constantes en 01gui.rpy
-#     #hover_background Frame("gui/button/menu_hover_background.png", 12, 12)
-#     #xpadding 20 #ypadding 10
-#     #xmargin 5 ymargin 5
-
-# style navigation_button_text:
-#     properties gui.button_text_properties("navigation_button")
-
-
-
-################################################################################
-## Principal y Pantalla de menu del juego.
-################################################################################
-
-
-## Pantalla del menú del juego #################################################
-##
-## Esto distribuye la estructura de base del menú del juego. Es llamado con el
-## título de la pantalla y presenta el fondo, el título y la navegación.
-##
-## El parámetro 'scroll' puede ser 'None', "viewport" o "vpgrid". Cuando se usa
-## esta pantalla con uno o más elementos, que son transcluídos (situados) en su
-## interior.
-
-# screen game_menu(title, scroll=None, yinitial=0.0):
-
-#     style_prefix "game_menu"
-
-#     if main_menu:
-#         add gui.main_menu_background
-#     else:
-#         add gui.game_menu_background
-
-#     frame:
-#         style "game_menu_outer_frame"
-
-#         hbox:
-
-#             ## Reservar espacio para la sección de navegación.
-#             frame:
-#                 style "game_menu_navigation_frame"
-
-#             frame:
-#                 style "game_menu_content_frame"
-
-#                 if scroll == "viewport":
-
-#                     viewport:
-#                         yinitial yinitial
-#                         scrollbars "vertical"
-#                         mousewheel True
-#                         draggable True
-#                         pagekeys True
-
-#                         side_yfill True
-
-#                         vbox:
-#                             transclude
-
-#                 elif scroll == "vpgrid":
-
-#                     vpgrid:
-#                         cols 1
-#                         yinitial yinitial
-
-#                         scrollbars "vertical"
-#                         mousewheel True
-#                         draggable True
-#                         pagekeys True
-
-#                         side_yfill True
-
-#                         transclude
-
-#                 else:
-
-#                     transclude
-
-#     use navigation
-
-#     ## https://patreon.renpy.org/very-old-features.html ------------------------
-#     if not main_menu:
-
-#         $ minutes, seconds = divmod(int(renpy.get_game_runtime()), 60)
-
-#         text _("Tiempo de juego:\n[minutes]:[seconds:02d]"):
-#             style "gui_text"
-#             xpos 44
-#             ypos 850 # original 620 # antes 600
-#     ## -------------------------------------------------------------------------
-
-
-#     textbutton _("Volver"):
-#         style "return_button"
-
-#         action Return()
-
-#     label title
-
-#     if main_menu:
-#         key "game_menu" action ShowMenu("main_menu")
-
-
-# style game_menu_outer_frame is empty
-# style game_menu_navigation_frame is empty
-# style game_menu_content_frame is empty
-# style game_menu_viewport is gui_viewport
-# style game_menu_side is gui_side
-# style game_menu_scrollbar is gui_vscrollbar
-
-# style game_menu_label is gui_label
-# style game_menu_label_text is gui_label_text
-
-# style return_button is navigation_button
-# style return_button_text is navigation_button_text
-
-# style game_menu_outer_frame:
-#     bottom_padding 45 # 30<720, 45<1080
-#     top_padding 180 # 120<720, 180<1080
-
-#     background "gui/overlay/game_menu.png"
-
-# style game_menu_navigation_frame:
-#     xsize 420 # 280<720, 420<1080
-#     yfill True
-
-# style game_menu_content_frame:
-#     left_margin 60 # 40<720, 60<1080
-#     right_margin 30 # 20<720, 30<1080
-#     top_margin 15 # 10<720, 15<1080
-
-# style game_menu_viewport:
-#     xsize 1380 # 920<720, 1380<1080
-
-# style game_menu_vscrollbar:
-#     unscrollable gui.unscrollable
-
-# style game_menu_side:
-#     spacing 15 # 15<720, 15<1080
-
-# style game_menu_label:
-#     xpos 75 # 50<720, 75<1080
-#     ysize 180 # 120<720, 180<1080
-
-# style game_menu_label_text:
-#     size gui.title_text_size
-#     color gui.accent_color
-#     yalign 0.5
-
-# style return_button:
-#     xpos gui.navigation_xpos
-#     yalign 1.0
-#     yoffset -45 # -30<720, -45<1080

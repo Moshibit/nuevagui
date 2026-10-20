@@ -1,4 +1,13 @@
-﻿## Pantalla 'acerca de' ########################################################
+﻿################################################################################
+## Inicialización
+################################################################################
+
+init offset = -1
+
+
+################################################################################
+
+## Pantalla 'acerca de' ########################################################
 ##
 ## Esta pantalla da información sobre los créditos y el copyright del juego y de
 ## Ren'Py.
@@ -21,6 +30,13 @@ screen about():
 
             label "[config.name!t]"
             text _("Versión [config.version!t]\n")
+            text _("Edición [gui.edition] [gui.rated]")
+            text _("[gui.platform] [gui.market]\n")
+
+            # TODO: hacer funcionar
+            ## DLC instalados
+            if gui.dlc:
+                text "[gui.dlc]"
 
             ## 'gui.about' se ajusta habitualmente en 'options.rpy'.
             if gui.about:
