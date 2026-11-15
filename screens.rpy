@@ -75,12 +75,14 @@ style frame:
     padding gui.frame_borders.padding
     background Frame("gui/frame.png", gui.frame_borders, tile=gui.frame_tile)
 
-
-# # [*] Estilos propios
+################################################################################
+## [*] Estilos propios
+################################################################################ 
 
 # style emoji:
 #     emoji_font "EmojiTwoCOLRv0.ttf"
-    
+
+
 ################################################################################
 ## Pantallas internas del juego
 ################################################################################
@@ -93,8 +95,8 @@ style frame:
 ## de ser mostrado respectivamente. (El parámetro 'who' puede ser 'None' si no
 ## se da ningún nombre.)
 ##
-## Esta pantalla debe crear un texto visualizable con id "what" que Ren'Py usa
-## para gestionar la visualización del texto. Puede crear también visualizables
+## Esta pantalla debe crear un texto 'displayable' con id "what" que Ren'Py usa
+## para gestionar la visualización del texto. Puede crear también 'displayables'
 ## con id "who" y id "window" para aplicar propiedades de estilo.
 ##
 ## https://www.renpy.org/doc/html/screen_special.html#say
@@ -170,7 +172,7 @@ style say_dialogue:
 ## Pantalla usada para visualizar 'renpy.input'. El parámetro 'prompt' se usa
 ## para pasar el texto presentado.
 ##
-## Esta pantalla debe crear un displayable 'input' con id "input" para aceptar
+## Esta pantalla debe crear un 'displayable' 'input' con id "input" para aceptar
 ## diversos parámetros de entrada.
 ##
 ## https://www.renpy.org/doc/html/screen_special.html#input
@@ -200,9 +202,9 @@ style input:
     xmaximum gui.dialogue_width
 
 
-## Pantalla de menú ############################################################
+## Pantalla de decisiones ######################################################
 ##
-## Esta pantalla presenta las elecciones dentro del juego de la sentencia
+## Esta pantalla presenta las decisiones dentro del juego de la sentencia
 ## 'menu'. El parámetro único, 'items', es una lista de objetos, cada uno con
 ## los campos 'caption' y 'action'.
 ##
@@ -257,7 +259,7 @@ screen quick_menu():
             textbutton _("Guardar") action ShowMenu('save')
             textbutton _("Guardar R.") action QuickSave()
             textbutton _("Cargar R.") action QuickLoad()
-            textbutton _("Prefs.") action ShowMenu('preferences')
+            textbutton _("Ajustes") action ShowMenu('preferences')
 
 
 ## Este código asegura que la pantalla 'quick_menu' se muestra en el juego,
@@ -313,7 +315,7 @@ screen navigation():
 
         textbutton _("Cargar") action ShowMenu("load")
 
-        textbutton _("Opciones") action ShowMenu("preferences")
+        textbutton _("Ajustes") action ShowMenu("preferences")
 
         if _in_replay:
 
@@ -408,6 +410,383 @@ style navigation_button_text:
 
 # style main_menu_version:
 #     properties gui.text_properties("version")
+
+
+screen main_menu():
+    style_prefix "main_menu" # [*]
+
+    ## TODO: hacer que el main menu muestre algo si permanece idle
+
+    ## Esto asegura que cualquier otra pantalla de menu es remplazada.
+    tag menu
+
+    ## Fondo del menú [*]
+    add gui.main_menu_background
+    # TODO cambiar de momento sera un place holder
+    # TODO: hacer un image button que mande a una web
+
+    ## [*] Logo del juego
+    add gui.main_menu_logo:
+        xalign gui.main_menu_logo_xaling
+        ypos gui.main_menu_logo_ypos
+
+    ## Este marco vacío oscurece el menu principal.
+    # frame:
+    #     style "main_menu_frame"
+
+    ## La sentencia 'use' incluye otra pantalla dentro de esta. El contenido
+    ## real del menú principal está en la pantalla de navegación.
+    # use navigation
+
+    ## [*] Botones principales del menú
+    if gui.main_menu_navi_orientation == "horizontal":
+        hbox:
+            style_prefix "navi"
+            style "navi_horizontal"
+            use navi_content
+
+    else: # Si el menú es vertical
+        ## Este marco vacío oscurece el menu principal.
+        frame:
+            style "main_menu_frame"
+        
+        vbox:
+            style_prefix "navi"
+            style "navi_vertical"
+            use navi_content
+
+
+    # Botones superiores [*]
+    hbox:
+        style_prefix "top_buttons"
+
+        imagebutton:
+            auto "gui/button/mmabout_%s.png"
+            action ShowMenu("about")
+
+        imagebutton:
+            auto "gui/button/mmlanguage_%s.png"
+            action NullAction() #ShowMenu("language") # TODO: hacer funcionar
+
+        imagebutton:
+            auto "gui/button/mmaccesibility_%s.png"
+            action NullAction() # ShowMenu("accesibility") # TODO: hacer funcionar
+
+    # if gui.show_name:
+
+    #     vbox:
+    #         style "main_menu_vbox"
+
+    #         text "[config.name!t]":
+    #             style "main_menu_title"
+
+    #         text "[config.version]":
+    #             style "main_menu_version"
+
+    ## Información del juego [*] 
+    if gui.show_name:
+        frame:  # Copyright (inferior izquierda)
+            style_prefix "main_menu_copyfooter"
+            
+            hbox: 
+                style_prefix "main_menu_footer"
+                # text "© ":
+                #     style "main_menu_footer_emoji"
+                text _("© [build.developer] [build.year]. Todos los derechos reservados.")
+
+        frame: # Versión (inferior derecha)
+            style_prefix "main_menu_versionfooter"
+
+            vbox: 
+                style_prefix "main_menu_footer"
+
+                if gui.show_name:
+                    text "[config.name!t]"
+                    text _("versión: [config.version]")
+                    ## Muestra información si es relevante
+                    if build.edition != "standar":
+                        text _("edición: [build.edition]")
+                    if build.rated != "all":
+                        text _("clasificación: [build.rated]")
+                    if build.platform != "multiplataform":
+                        text _("plataforma: [build.platform]")
+                    if build.market != "general":
+                        text _("distribución: [build.market]")
+                    if build.developer:
+                        text _("Modo desarrollor"):
+                            color "#ff0000"
+
+    ## Información del juego [*] 
+
+
+## Estilos del menú princiapal [*]
+style main_menu_frame is empty
+# style main_menu_vbox is vbox
+style main_menu_text is gui_text
+style main_menu_title is main_menu_text
+# style main_menu_version is main_menu_text
+
+style main_menu_frame:
+    xsize 420
+    yfill True
+
+    background "gui/overlay/main_menu.png"
+
+# style main_menu_vbox:
+#     xalign 1.0
+#     xoffset -30
+#     xmaximum 1200
+#     yalign 1.0
+#     yoffset -30
+
+style main_menu_text:
+    properties gui.text_properties("main_menu", accent=True)
+
+style main_menu_title:
+    properties gui.text_properties("title")
+
+# style main_menu_version:
+#     properties gui.text_properties("version")
+
+## [*] Estilos añadidos
+# --- Información del juego
+
+style main_menu_copyfooter_frame:
+    background Solid("#333a")
+    xalign 0.0
+    xoffset 20
+    yalign 1.0
+    yoffset -20
+
+style main_menu_versionfooter_frame:
+    background Solid("#333a")
+    xalign 1.0
+    xoffset -20
+    yalign 1.0
+    yoffset -20
+
+style main_menu_footer_text is main_menu_text:
+    properties gui.text_properties("footer")
+
+style main_menu_footer_emoji is emoji:
+    take main_menu_footer_text
+    # outlines [ ]
+    
+style main_menu_footer_vbox is vbox:
+    box_align 1.0
+
+
+style main_menu_footer_hbox is hbox
+
+## --- Botones superiores
+style top_buttons_hbox:
+    xalign 1.0
+    xoffset -20
+    ypos 20 
+    spacing 10
+
+## --- Navegación principal ---
+style navi_button is gui_button
+style navi_button_text is gui_button_text
+
+style navi_button:
+    size_group "navi"
+    properties gui.button_properties("navi_button")
+
+style navi_button_text:
+    properties gui.text_properties("navi_button")
+
+
+style navi_horizontal is hbox:
+    xalign gui.main_menu_navi_hposition[0]
+    yalign gui.main_menu_navi_hposition[1]
+    spacing gui.navi_buttons_hspacing
+
+style navi_vertical is vbox:
+    xalign gui.main_menu_navi_vposition[0]
+    yalign gui.main_menu_navi_vposition[1]
+    spacing gui.navi_buttons_vspacing
+
+style navi_vbox is vbox:
+    xalign 0.5
+    spacing 5
+
+style navi_text is main_menu_text:
+    properties gui.text_properties("navi_button")
+    xalign 0.5
+
+
+# === Pantallas Auxiliares ===
+screen navi_content(): # --- Contenido del navi ---
+    vbox: # Iniciar
+        # imagebutton:
+        #     auto "gui/button/mmplay_%s.png"
+        #     action If(persistent.first_run, Start(), Show("submenu_screen"))
+        textbutton "⭐ " + _("Jugar"):
+            background "#00ff00"
+            action If(persistent.first_run, Start(), Show("submenu_screen"))
+    vbox: # Opciones
+        # imagebutton:
+        #     auto "gui/button/mmoptions_%s.png"
+        #     action ShowMenu("preferences")
+        
+        textbutton _("⚙️ Ajustes") action ShowMenu("preferences") background "#00ff00"
+    vbox: # Extras
+        # imagebutton:
+        #     auto "gui/button/mmextras_%s.png"
+        #     action ShowMenu("extras")
+        textbutton _("🎁 Extras") action ShowMenu("extras") background "#00ff00"
+    #vbox: # Salir
+        # imagebutton:
+        #     auto "gui/button/mmexit_%s.png"
+        #     action Quit()
+    textbutton _("🚪 Salir") action Quit() background "#00ff00"
+    
+    
+    
+    # frame:
+    #     background Solid("#00f")
+    # button:
+    #     idle_background Solid("#f00")
+    #     hover_background Solid("#0f0")
+    #     action Notify("text completado")
+    #     vbox:
+    #         add "gui/button/mmexit_idle.png"
+    #         text "Hola"
+
+
+
+#       ## TODO agregar un boton para sideStories. oculto[debe ser oculto y no desvanecido]  solos al finalizar el juegon
+#       ##      o cambiar el comportamiento de del boton para mostrar un selector de historias.
+
+
+### temporal
+style mybutton_textbutton:
+    background "#00ff00"
+
+
+screen submenu_screen: # --- Submenús ---
+    # TODO: hacer que sea una pantalla completa y no una ventana flotante.
+    #       poner boton de return para regresar al mine menu. 
+    #       eliminar el zorder y añadir tag menu, quitar el close layer
+    # NOTE: persistene.end_game, persistent.unlocked_routes y 
+    #       persistent.after_story_unlocked deben definirse = True 
+    #       en algun lugar del script de juego
+
+    zorder 100
+
+    button:
+        style "close_layer"
+        action Hide()
+
+    frame:
+        modal True
+        style_prefix "submenu"
+
+        hbox:
+            vbox: # Inicio
+                label _("Menú de inicio")
+                textbutton "▶ " + _("Nueva partida") action Start()
+                if persistent.end_game:
+                    textbutton "➕ " + _("Nueva partida +") action Start("new_game_plus")
+                if persistent.unlocked_routes:
+                    textbutton "🔀 " + _("Selector de Rutas") action [ShowMenu("route_selector"), Hide("submenu_screen")]
+                if persistent.after_story_unlocked:
+                    textbutton "💞 " + _("After Stories") action [ShowMenu("after_selector"), Hide("submenu_screen")]
+                    
+            vbox: # Carga
+                label _("Menú de carga")
+                if renpy.can_load("quitsave"):
+                    textbutton "💾 " + _("Reanudar") action FileLoad("quitsave", slot=True) #reanuda desde el punto en que se salio
+                textbutton "📌 " + _("Continuar") action Continue(regexp=r'\d',confirm=False) #[r'\d+',]       aparte # reanuda desde el ultimo archivo salvado(o eso se supone que hace)
+                textbutton "➡️ " + _("Cargar partida") action [ShowMenu("load"), Hide("submenu_screen")]
+
+    key "game_menu" action Hide("submenu_screen")
+
+## --- capa de cierre ---
+style close_layer:
+    area (0, 0, config.screen_width, config.screen_height)
+    background "#000000aa"
+
+## --- Submenus ---
+style submenu_frame is frame:
+    
+    xalign 0.5
+    yalign 0.5
+    padding gui.submenu_padding
+    
+style submenu_hbox is hbox:
+    spacing gui.submenu_hspacing
+
+style submenu_vbox is vbox:
+    #box_align 10.0
+    spacing gui.submenu_vspacing
+
+style submenu_text is gui_text:
+    size gui.submenu_button_text_size
+
+style submenu_button is gui_button
+
+style submenu_button_text is gui_button_text:
+    properties gui.text_properties("submenu_button")
+
+
+# [*] experimental
+# screen my_iconbutton(icon, caption=None): #, **properties
+#     #$ icon_properties, text_properties, button_properties = renpy.split_properties(properties, "icon_", "text_", "")
+
+#     button:
+#         #style "iconbutton"
+#         #properties button_properties
+
+#         if caption:
+#             text caption #style "iconbutton_text" properties text_properties
+
+#         #icon icon style "iconbutton_icon" properties icon_properties
+#         add icon 
+
+# TODO: ver como mandar a la pantalla de opciones de video que se accdeder por SHIFT + G
+# TODO: mandar el boton de accecibilidad top button a la pantallas de accecibilidad SHIFT + A.
+# TODO: o acrear esa pantalla basandose en la de shift + A
+
+# ========================================================================
+# Contenido de la Historia y Galería
+
+#     Galería de Imágenes (CG Gallery): Esta es casi un must-have. Permite a los jugadores revisar todas las imágenes y escenas especiales (CGs) que han desbloqueado durante el juego. Es ideal que se puedan ver en pantalla completa.
+#     Galería de Sprites/Personajes: Muestra los diferentes sprites (ilustraciones de los personajes) con sus variaciones de expresiones y atuendos. Puede incluir biografías o perfiles cortos de cada personaje.
+#     Revisor de Escenas (Scene Replay/Memories): Permite a los jugadores revivir escenas específicas de la historia que ya hayan desbloqueado, especialmente útil para ver las ramificaciones de la trama o momentos favoritos.
+#     Diccionario/Glosario: Si tu VN tiene terminología compleja, nombres de lugares o conceptos únicos, un glosario es invaluable para que los jugadores puedan consultarlos.
+#     Árbol de Rutas/Progreso (Route Map/Flowchart): Muy útil para VN con múltiples rutas y finales. Muestra visualmente las decisiones tomadas y las rutas desbloqueadas, ayudando a los jugadores a encontrar los finales que les faltan.
+#     Finales Desbloqueados (Endings List): Una lista sencilla de todos los finales que el jugador ha conseguido, y quizás pistas sutiles sobre los que faltan.
+
+# Multimedia y Sonido
+
+#     Jukebox/Galería de Música (Music Gallery): Permite escuchar todas las pistas de la banda sonora del juego. Ideal si se pueden ver los nombres de las canciones y del compositor.
+#     Galería de Voces (Voice Gallery): Si tu VN tiene voces, esta opción permite escuchar las líneas de diálogo de los personajes, a menudo organizadas por personaje o por escena.
+#     Videos/Cortos Animados ( si aplica): Si tu VN tiene secuencias animadas o videos promocionales, este es el lugar para que los jugadores los revisen.
+
+# Material Adicional y Coleccionables
+
+#     Concept Art/Bocetos: Muestra arte conceptual, diseños tempranos de personajes o escenarios, y notas de los desarrolladores.
+#     Material de Desarrollo/Comentarios del Equipo: Un apartado donde los desarrolladores pueden compartir anécdotas, decisiones de diseño o curiosidades sobre la creación del juego.
+#     Logros/Premios: Si tienes un sistema de logros internos o integrados con plataformas como Steam, un menú para verlos es una buena adición.
+#     Mini-juegos (si aplica): Si incluiste pequeños juegos o rompecabezas dentro de la VN, puedes dar la opción de jugarlos por separado.
+#     Arte de Fans/Fan Art (si planeas curarlo): Si tienes una comunidad activa, podrías considerar una galería de arte de fans (con su permiso, claro).
+
+# Recomendaciones para la implementación:
+
+#     Claridad: Asegúrate de que los nombres de las opciones sean claros y descriptivos.
+#     Organización: Agrupa las opciones de forma lógica, como en las categorías que te he presentado.
+#     Accesibilidad: Que sea fácil navegar por el submenú y acceder a cada sección.
+#     Progreso: Muchas opciones, como la galería de CGs o la jukebox, solo deben mostrar contenido que el jugador ya haya "desbloqueado" al avanzar en la historia.
+#     Estilo: Mantén la estética de tu VN en el diseño del submenú.
+
+# Al elegir qué incluir, piensa en lo que tus jugadores disfrutarían más después de terminar la historia principal o mientras exploran diferentes rutas. Un buen apartado de "Extras" puede prolongar la vida útil de tu VN y aumentar la satisfacción del jugador.
+
+
+
+
+
 
 
 ## Pantalla del menú del juego #################################################
@@ -543,6 +922,198 @@ style navigation_button_text:
 #     yoffset -45
 
 
+screen game_menu(title, scroll=None, yinitial=0.0, spacing=0, menu_type=None): #, tooltip=""
+
+    style_prefix "game_menu"
+
+    # --- Fondo del menú ---
+    add "gui/gm.png"#TODO: DEBUG: Borrar 
+    # TODO cambiar por #add gui.game_menu_background
+
+    vbox:
+        
+        frame: # 1. Cabecera (Header) -----------------------------------------
+            
+            ysize int(config.screen_height * 0.1)
+            xfill True
+            
+            background Transform(
+                Frame("gui/frame.png", gui.frame_borders, tile=gui.frame_tile),
+                alpha=0.7) # TODO: DEBUG Borrar o cambiar el bg, temporal
+            
+            has hbox
+            xfill True
+            yalign 0.5
+            
+
+            label "★ " + title + " ★": # --- Título (esquina superior izquierda) # --> "★ [title] ★":
+                xalign 0.0
+                xoffset 40
+            
+            hbox: # --- Barra de menús principal (esquina superiror derecha)
+                xalign 1.0
+                spacing 20
+                xoffset -40
+                # style "game_menu_header_buttons"
+
+                # --- Mostramos los botones según el tipo de menú ---
+                if menu_type == "game":
+                    textbutton _("Opciones") action ShowMenu("preferences")
+                    textbutton _("Guardar") action ShowMenu("save")
+                    textbutton _("Cargar") action ShowMenu("load")
+                    
+                    # textbutton _("Adultos") action ShowMenu("adult_options") # TODO: poner como submenu de preferences, TODO: controlar con persistente.
+                    # graficos y video opciones con contro G y contro A
+                
+                elif menu_type == "extras": 
+                    textbutton _("Sprites") action ShowMenu("sprites")
+                    textbutton _("Galería") action ShowMenu("gallery")
+                    textbutton _("Música") action ShowMenu("music_room")
+                    textbutton _("Escenas") action ShowMenu("scenes")
+                    # TODO: agregar mas
+                
+                elif menu_type == "in_game": 
+                    textbutton _("Stats") action ShowMenu("stats")
+                    textbutton _("Misiones") action ShowMenu("quests")
+                    textbutton _("Codex") action ShowMenu("codex")
+                    textbutton _("Guía") action ShowMenu("game_guide")
+                    # TODO: agregar mas (opciones del gameplay)
+
+                elif menu_type == "help":
+                    textbutton _("Accesivilidad") action NullAction() #ShowMenu() # TODO: hacerfuncionar
+                    textbutton _("Idioma") action NullAction() #ShowMenu() # TODO: hacerfuncionar
+                    textbutton _("Acerca de") action ShowMenu("about")
+                    textbutton _("Ayuda") action Help()
+
+
+        frame: # 2. Área de contenido principal (Body) ------------------------
+            ysize int(config.screen_height * 0.8)
+            xfill True
+            background Transform(
+                Frame("gui/frame.png", gui.frame_borders, tile=gui.frame_tile),
+                alpha=0.7) # TODO: DEBUG Borrar o ccambiar el bg, temporal
+            # style "game_menu_content_frame"
+            
+            # --- Elige el tipo de scroll ----
+            if scroll == "viewport":
+                viewport:
+                    id "viewport"
+                    yinitial yinitial
+                    scrollbars "vertical"
+                    mousewheel True
+                    draggable True
+                    pagekeys True
+                    side_yfill True
+
+                    vbox:
+                        spacing spacing
+                        transclude
+
+            elif scroll == "vpgrid":
+                vpgrid:
+                    cols 1
+                    yinitial yinitial
+                    scrollbars "vertical"
+                    mousewheel True
+                    draggable True
+                    pagekeys True
+                    side_yfill True
+
+                    spacing spacing
+                    transclude
+
+            else:
+                transclude
+
+
+        # 3. Pie de página (Footer) -------------------------------------------
+        frame:
+            ysize int(config.screen_height * 0.1)
+            xfill True
+            background Transform(
+                Frame("gui/frame.png", gui.frame_borders, tile=gui.frame_tile),
+                alpha=0.7) # TODO DEBUG: Borrar este background
+
+
+            has hbox
+            xfill True
+            yalign 0.5
+
+            hbox: # --- Tooltip (esquina inferior izquierda)
+                xalign 0.0
+                xoffset 40
+                spacing 5
+
+                text _("Ayuda: ")
+                text "demo de tooltip" # TODO: eliminar la linea y poner el tooltip de abajo
+                # text tooltip #: # TODO: agregar tooltips y remplazar por la linea de arriba
+                    # style "game_menu_tooltip"
+                    
+            
+            hbox: # --- Botones de acción (esquina inferior derecha)
+                xalign 1.0
+                xoffset -40
+                spacing 40
+                # style "game_menu_footer_buttons"
+                
+                textbutton _("Salir") action Quit(confirm=not main_menu)
+                if not main_menu:
+                    textbutton _("Menú Principal") action MainMenu()
+                textbutton _("Volver") action Return()
+
+
+    # Atajo de teclado para el menú principal
+    if main_menu:
+        key "game_menu" action ShowMenu("main_menu")
+        # TODO: else reggresar o cerrar ventana (parece que  ya está)
+
+
+
+
+
+## Estilos para la nueva estructura ############################################
+
+# Estilos para la cabecera
+style game_menu_title:
+    size 36
+    color gui.accent_color
+    bold True
+    outlines [(2, "#0008", 0, 0)]
+
+style game_menu_header_buttons:
+    spacing 30
+
+style game_menu_header_buttons_text:
+    size 22
+
+# Estilos para el contenido
+style game_menu_content_frame:
+    #background "#0003"  # Fondo semi-transparente para el área de contenido
+    padding (25, 15)
+    #margin (50, 0, 50, 0)
+
+# Estilos para el pie de página
+style game_menu_tooltip:
+    size 16
+    color "#CCC"
+    italic True
+
+style game_menu_footer_buttons:
+    spacing 20
+
+style game_menu_footer_buttons_text:
+    size 18
+    hover_color gui.hover_color
+    selected_color gui.selected_color
+
+# Estilos generales
+# style game_menu_viewport:
+#     #xsize 1380
+
+style game_menu_vscrollbar:
+    unscrollable gui.unscrollable
+
+
 ## Pantalla 'acerca de' ########################################################
 ##
 ## Esta pantalla da información sobre los créditos y el copyright del juego y de
@@ -573,6 +1144,37 @@ style navigation_button_text:
 
 #             text _("Hecho con {a=https://www.renpy.org/}Ren'Py{/a} [renpy.version_only].\n\n[renpy.license!t]")
 
+screen about():
+
+    tag menu
+
+    ## Esta sentencia 'use' incluye la pantalla 'game_menu' dentro de esta. El
+    ## elemento 'vbox' se incluye entonces dentro del 'viewport' al interno de
+    ## la pantalla 'game_menu'.
+    use game_menu(_("Acerca de"), scroll="viewport", menu_type="help"):
+
+        style_prefix "about"
+
+        vbox:
+
+            label "[config.name!t]"
+            text _("Versión [config.version!t]\n")
+            text _("Edición [gui.edition] [gui.rated]")
+            text _("[gui.platform] [gui.market]\n")
+
+            # TODO: hacer funcionar
+            ## DLC instalados
+            if gui.dlc:
+                text "[gui.dlc]"
+
+            ## 'gui.about' se ajusta habitualmente en 'options.rpy'.
+            if gui.about:
+                text "[gui.about!t]\n"
+
+            text _("Hecho con {a=https://www.renpy.org/}Ren'Py{/a} [renpy.version_only].\n\n[renpy.license!t]")
+
+
+
 
 # style about_label is gui_label
 # style about_label_text is gui_label_text
@@ -581,6 +1183,12 @@ style navigation_button_text:
 # style about_label_text:
 #     size gui.label_text_size
 
+style about_label is gui_label
+style about_label_text is gui_label_text
+style about_text is gui_text
+
+style about_label_text:
+    size gui.label_text_size
 
 ## Pantallas de carga y guardado ###############################################
 ##
@@ -728,18 +1336,159 @@ style navigation_button_text:
 #     properties gui.text_properties("slot_button")
 
 
-# ## Pantalla de preferencias ####################################################
-# ##
-# ## La pantalla de preferencias permite al jugador configurar el juego a su
-# ## gusto.
-# ##
-# ## https://www.renpy.org/doc/html/screen_special.html#preferences
+screen save():
+
+    tag menu
+
+    use file_slots(_("Guardar"))
+
+
+screen load():
+
+    tag menu
+
+    use file_slots(_("Cargar"))
+
+
+screen file_slots(title):
+
+    default page_name_value = FilePageNameInputValue(pattern=_("Página {}"), auto=_("Grabación automática"), quick=_("Grabación rápida"))
+
+    use game_menu(title, menu_type="game"):
+
+        fixed:
+
+            ## Esto asegura que 'input' recibe el evento 'enter' antes que otros
+            ## botones.
+            order_reverse True
+
+            ## El nombre de la pagina, se puede editar haciendo clic en el
+            ## botón.
+            button:
+                style "page_label"
+
+                key_events True
+                xalign 0.5
+                action page_name_value.Toggle()
+
+                input:
+                    style "page_label_text"
+                    value page_name_value
+
+            ## La cuadrícula de huecos de guardado.
+            grid gui.file_slot_cols gui.file_slot_rows:
+                style_prefix "slot"
+
+                xalign 0.5
+                yalign 0.5
+
+                spacing gui.slot_spacing
+
+                for i in range(gui.file_slot_cols * gui.file_slot_rows):
+
+                    $ slot = i + 1
+
+                    button:
+                        action FileAction(slot)
+
+                        has vbox
+
+                        add FileScreenshot(slot) xalign 0.5
+
+                        text FileTime(slot, format=_("{#file_time}%A, %d de %B %Y, %H:%M"), empty=_("vacío")):
+                            style "slot_time_text"
+
+                        text FileSaveName(slot):
+                            style "slot_name_text"
+
+                        key "save_delete" action FileDelete(slot)
+
+            ## Botones de acceso a otras páginas
+            vbox:
+                style_prefix "page"
+
+                xalign 0.5
+                yalign 1.0
+
+                hbox:
+                    xalign 0.5
+
+                    spacing gui.page_spacing
+
+                    textbutton _("<") action FilePagePrevious()
+                    key "save_page_prev" action FilePagePrevious()
+
+                    if config.has_autosave:
+                        textbutton _("{#auto_page}A") action FilePage("auto")
+
+                    if config.has_quicksave:
+                        textbutton _("{#quick_page}R") action FilePage("quick")
+
+                    ## range(1, 10) da los números del 1 al 9.
+                    for page in range(1, 10):
+                        textbutton "[page]" action FilePage(page)
+
+                    textbutton _(">") action FilePageNext()
+                    key "save_page_next" action FilePageNext()
+
+                if config.has_sync:
+                    if CurrentScreenName() == "save":
+                        textbutton _("Subir Sync"):
+                            action UploadSync()
+                            xalign 0.5
+                    else:
+                        textbutton _("Descargar Sync"):
+                            action DownloadSync()
+                            xalign 0.5
+
+
+style page_label is gui_label
+style page_label_text is gui_label_text
+style page_button is gui_button
+style page_button_text is gui_button_text
+
+style slot_button is gui_button
+style slot_button_text is gui_button_text
+style slot_time_text is slot_button_text
+style slot_name_text is slot_button_text
+
+style page_label:
+    xpadding 75
+    ypadding 5
+    xalign 0.5
+
+style page_label_text:
+    textalign 0.5
+    layout "subtitle"
+    hover_color gui.hover_color
+
+style page_button:
+    properties gui.button_properties("page_button")
+
+style page_button_text:
+    properties gui.text_properties("page_button")
+
+style slot_button:
+    properties gui.button_properties("slot_button")
+
+style slot_button_text:
+    properties gui.text_properties("slot_button")
+
+
+
+
+## Pantalla de preferencias ####################################################
+##
+## La pantalla de ajustes permite al jugador configurar el juego a su
+## gusto.
+##
+## https://www.renpy.org/doc/html/screen_special.html#preferences
 
 # screen preferences():
 
 #     tag menu
 
-#     use game_menu(_("Opciones"), scroll="viewport"):
+#     use game_menu(_("Ajustes"), scroll="viewport"):
 
 #         vbox:
 
@@ -758,11 +1507,11 @@ style navigation_button_text:
 #                     style_prefix "check"
 #                     label _("Saltar")
 #                     textbutton _("Texto no visto") action Preference("skip", "toggle")
-#                     textbutton _("Tras elecciones") action Preference("after choices", "toggle")
+#                     textbutton _("Después de decisiones") action Preference("after choices", "toggle")
 #                     textbutton _("Transiciones") action InvertSelected(Preference("transitions", "toggle"))
 
 #                 ## Aquí se pueden añadir 'vboxes' adicionales del tipo
-#                 ## "radio_pref" o "check_pref" para nuevas preferencias.
+#                 ## "radio_pref" o "check_pref" para nuevos ajustes.
 
 #             null height (4 * gui.pref_spacing)
 
@@ -772,11 +1521,11 @@ style navigation_button_text:
 
 #                 vbox:
 
-#                     label _("Veloc. texto")
+#                     label _("Velocidad de texto")
 
 #                     bar value Preference("text speed")
 
-#                     label _("Veloc. autoavance")
+#                     label _("Tiempo de avance automático")
 
 #                     bar value Preference("auto-forward time")
 
@@ -885,6 +1634,350 @@ style navigation_button_text:
 
 # style slider_vbox:
 #     xsize 675
+
+
+
+screen preferences():
+
+    tag menu
+
+    default tab = "text"
+
+    use game_menu(_("Opciones"), scroll="viewport", menu_type="game"):
+
+        vbox:
+            xpos 50
+            ypos 5
+            spacing 15
+        
+            hbox:
+                spacing 50
+
+
+                textbutton _("Gráficos") action SetScreenVariable("tab", "grafics")
+                textbutton _("Texto") action SetScreenVariable("tab", "text")
+                textbutton _("Audio") action SetScreenVariable("tab", "audio")
+                textbutton _("Voces") action SetScreenVariable("tab", "voice")
+                textbutton _("Salvar/Cargar") action SetScreenVariable("tab", "save_load")
+                # if GamepadExists(): # TODO añadir las variables persistent del dlc adult
+                #     textbutton _("Adulto") action SetScreenVariable("device", "adult")
+
+                # TODO: tabs y subtabas que se haran en otro lado del script.
+                # graficos, texto, audio, voces, guardado/cargado, dlc18plues
+                # en otro lado accesivilidad, / idioma / about , contactos , creditos, licencias / controles, atajos, ayuds y consejos de visual novels 
+                # extras etc etc etc etc
+                # enotro otro lado opciones sobre el gameplay y no sobre modo vn
+
+            hbox:
+                
+                if tab == "grafics":
+                    use grafics_opt
+                elif tab == "text":
+                    use text_opt
+                elif tab == "audio":
+                    use audio_opt
+                elif tab == "voice":
+                    use voice_opt
+                elif tab == "save_load":
+                    use save_load_opt
+                # elif tab == "adult": # TODO activar esta parte
+                #     use adult_opt
+
+
+# TODO: botones--> on/off, on/neutra/off, radio, check, combo_box, sliders
+
+screen grafics_opt():
+        # TODO: feats:
+        # * pantalla tamaños ?
+        # * Activar / Desactivar particulas
+        # * BG del main menu
+        # * skin de interface
+        # * Anti-aliasing ??
+        # * Vsync ??
+        # * fps limite  ??
+        # * lived2
+        # * efectos
+        # * flasheos o cambios de colores rapidos (accesibilidad)
+        # * temblores (accesibilidad)
+
+    vbox:
+        box_wrap True
+
+        if renpy.variant("pc") or renpy.variant("web"):
+
+            vbox:
+                style_prefix "radio"
+                label _("Pantalla")
+                textbutton _("Ventana") action Preference("display", "window")
+                textbutton _("Pantalla completa") action Preference("display", "fullscreen")
+    
+    null width (4 * gui.pref_button_spacing)
+
+    vbox:
+        box_wrap True
+
+        text "algo va aquí _G_"
+        
+
+screen text_opt():
+    # TODO: feats:
+    # * tamaño (accesibilidad)
+    # * fuentes (accesibilidad)
+    # * velocidad
+    # * color  -- visto, ya visto, otros? --
+    # * opasidad del la ventana de texto
+    # * subtitulos(cinematicas) / accesibilidad
+    # * saltos y omisiones
+    # * saltos de eleccione
+    # * saltos de esccenas
+
+    
+    vbox:
+        box_wrap True
+
+        vbox:
+            style_prefix "slider"
+            
+            
+            label _("Veloc. texto")
+
+            bar value Preference("text speed")
+
+            label _("Veloc. autoavance")
+
+            bar value Preference("auto-forward time")
+
+    null width (4 * gui.pref_spacing)
+
+
+    vbox:
+        box_wrap True
+
+        vbox:
+            style_prefix "check"
+            label _("Saltar")
+            textbutton _("Texto no visto") action Preference("skip", "toggle")
+            textbutton _("Tras elecciones") action Preference("after choices", "toggle")
+            textbutton _("Transiciones") action InvertSelected(Preference("transitions", "toggle"))
+
+        ## Aquí se pueden añadir 'vboxes' adicionales del tipo
+        ## "radio_pref" o "check_pref" para nuevas preferencias.
+
+
+
+
+
+
+screen audio_opt():
+    # TODO: feats:
+        # * volume maestro
+        # * volumen musica
+        # * volumen fsx
+        # * volumen ambiental
+        # * salida de audio ??
+    vbox:
+        box_wrap True
+        
+        vbox:
+            style_prefix "slider"
+            #box_wrap True
+
+            if config.has_music:
+                label _("Volumen música")
+
+                hbox:
+                    bar value Preference("music volume")
+
+            if config.has_sound:
+
+                label _("Volumen sonido")
+
+                hbox:
+                    bar value Preference("sound volume")
+
+                    if config.sample_sound:
+                        textbutton _("Prueba") action Play("sound", config.sample_sound)
+
+
+            if config.has_voice:
+                label _("Volumen voz")
+
+                hbox:
+                    bar value Preference("voice volume")
+
+                    if config.sample_voice:
+                        textbutton _("Prueba") action Play("voice", config.sample_voice)
+
+            if config.has_music or config.has_sound or config.has_voice:
+                null height gui.pref_spacing
+
+                textbutton _("Silenciar todo"):
+                    action Preference("all mute", "toggle")
+                    style "mute_all_button"
+
+    null width (4 * gui.pref_spacing)
+
+    vbox:
+        box_wrap True
+        
+        text "algo va aquí _A_ 2"
+
+screen voice_opt():
+
+    # TODO : feats:
+        # * Volumen de voces
+        # * texto a  vox
+        #  * opciones de texto y voz
+        # * voz del sistema o vocesrandom
+
+    vbox:
+        box_wrap True
+
+        text "algo va aquí _V_ 1"
+
+    null width (4 * gui.pref_spacing)
+
+
+    vbox:
+        box_wrap True
+
+        text "algo va aquí _V_ 2"
+
+
+screen save_load_opt():
+    # TODO : feats:
+        # * autosave
+        # * salvados al salir
+        # reanudar automatico
+        # preguntas sobre salvar en momentos criticos
+
+    vbox:
+        box_wrap True
+
+        text "algo va aquí _S_ 1"
+
+    null width (4 * gui.pref_spacing)
+
+    vbox:
+        box_wrap True
+
+        text "algo va aquí _S_ 2"
+
+# 
+
+# OPCIONES DE GAME PLAY # TODO: va en otro lado
+# dificultad, tiempo en elecciones, dificultad de puzzles, consejos en puzzles
+# indicadores de interaccion en imagemaps
+# tutoriales
+# confirmaciones dde si o no en promts del sistema
+# facilitar u omitir quick time events
+# Passwords y desbloqueso
+# marcas en las elecciones, ayudas, ya leejidas, 
+# reset de persistentes.
+
+# OPCIONES DE accesiblidad # TODO: va en otro lado
+# daltonimsmo
+# subtitulos
+# alto contraste
+# indicadores visuales,
+# shake
+# 
+
+# OPCIONES DE dlc18 # TODO: va en otro lado
+# activar des activar contenido
+# intensidad
+# filtros de contenido
+
+
+# TODO opciones de partida. una vez por partida
+# filtros contenido permitido
+# 
+
+# TODO : OPCIONES DE CONTROLES
+
+# TODO IDIOMAS, texto y voz, subtitulos,
+
+
+# EXTRAS. Galerias, cg, bg, bgm, logros, creditos, replays, developer notes, 
+# porcentaje de texto completado, desbloqeable y coleccionables y sus porcentajes, finales 
+
+
+# BOTON Restaurar por pestaña
+# ventana de preview de texto
+
+
+style pref_label is gui_label
+style pref_label_text is gui_label_text
+style pref_vbox is vbox
+
+style radio_label is pref_label
+style radio_label_text is pref_label_text
+style radio_button is gui_button
+style radio_button_text is gui_button_text
+style radio_vbox is pref_vbox
+
+style check_label is pref_label
+style check_label_text is pref_label_text
+style check_button is gui_button
+style check_button_text is gui_button_text
+style check_vbox is pref_vbox
+
+style slider_label is pref_label
+style slider_label_text is pref_label_text
+style slider_slider is gui_slider
+style slider_button is gui_button
+style slider_button_text is gui_button_text
+style slider_pref_vbox is pref_vbox
+
+style mute_all_button is check_button
+style mute_all_button_text is check_button_text
+
+style pref_label:
+    top_margin gui.pref_spacing
+    bottom_margin 3
+
+style pref_label_text:
+    yalign 1.0
+
+style pref_vbox:
+    xsize 338
+
+style radio_vbox:
+    spacing gui.pref_button_spacing
+
+style radio_button:
+    properties gui.button_properties("radio_button")
+    foreground "gui/button/radio_[prefix_]foreground.png"
+
+style radio_button_text:
+    properties gui.text_properties("radio_button")
+
+style check_vbox:
+    spacing gui.pref_button_spacing
+
+style check_button:
+    properties gui.button_properties("check_button")
+    foreground "gui/button/check_[prefix_]foreground.png"
+
+style check_button_text:
+    properties gui.text_properties("check_button")
+
+style slider_slider:
+    xsize 525
+
+style slider_button:
+    properties gui.button_properties("slider_button")
+    yalign 0.5
+    left_margin 15
+
+style slider_button_text:
+    properties gui.text_properties("slider_button")
+
+style slider_vbox:
+    xsize 675
+
+
+
 
 
 ## Pantalla de historial #######################################################
@@ -1140,6 +2233,161 @@ style navigation_button_text:
 #     textalign 1.0
 
 
+screen help():
+
+    tag menu
+
+    default device = "keyboard"
+
+    use game_menu(_("Ayuda"), scroll="viewport", menu_type="help"):
+
+        style_prefix "help"
+
+        vbox:
+            spacing 23
+
+            hbox:
+
+                textbutton _("Teclado") action SetScreenVariable("device", "keyboard")
+                textbutton _("Ratón") action SetScreenVariable("device", "mouse")
+
+                if GamepadExists():
+                    textbutton _("Mando") action SetScreenVariable("device", "gamepad")
+
+            if device == "keyboard":
+                use keyboard_help
+            elif device == "mouse":
+                use mouse_help
+            elif device == "gamepad":
+                use gamepad_help
+
+
+screen keyboard_help():
+
+    hbox:
+        label _("Intro")
+        text _("Avanza el diálogo y activa la interfaz.")
+
+    hbox:
+        label _("Espacio")
+        text _("Avanza el diálogo sin seleccionar opciones.")
+
+    hbox:
+        label _("Teclas de flecha")
+        text _("Navega la interfaz.")
+
+    hbox:
+        label _("Escape")
+        text _("Accede al menú del juego.")
+
+    hbox:
+        label _("Ctrl")
+        text _("Salta el diálogo mientras se presiona.")
+
+    hbox:
+        label _("Tabulador")
+        text _("Activa/desactiva el salto de diálogo.")
+
+    hbox:
+        label _("Av. pág.")
+        text _("Retrocede al diálogo anterior.")
+
+    hbox:
+        label _("Re. pág.")
+        text _("Avanza hacia el diálogo siguiente.")
+
+    hbox:
+        label "H"
+        text _("Oculta la interfaz.")
+
+    hbox:
+        label "S"
+        text _("Captura la pantalla.")
+
+    hbox:
+        label "V"
+        text _("Activa/desactiva la asistencia por {a=https://www.renpy.org/l/voicing}voz-automática{/a}.")
+
+    hbox:
+        label "Shift+A"
+        text _("Abre el menú de accesibilidad.")
+
+
+screen mouse_help():
+
+    hbox:
+        label _("Clic izquierdo")
+        text _("Avanza el diálogo y activa la interfaz.")
+
+    hbox:
+        label _("Clic medio")
+        text _("Oculta la interfaz.")
+
+    hbox:
+        label _("Clic derecho")
+        text _("Accede al menú del juego.")
+
+    hbox:
+        label _("Rueda del ratón arriba")
+        text _("Retrocede al diálogo anterior.")
+
+    hbox:
+        label _("Rueda del ratón abajo")
+        text _("Avanza hacia el diálogo siguiente.")
+
+
+screen gamepad_help():
+
+    hbox:
+        label _("Gatillo derecho\nA/Botón inferior")
+        text _("Avanza el diálogo y activa la interfaz.")
+
+    hbox:
+        label _("Gatillo izquierdo\nBotón sup. frontal izq.")
+        text _("Retrocede al diálogo anterior.")
+
+    hbox:
+        label _("Botón sup. frontal der.")
+        text _("Avanza hacia el diálogo siguiente.")
+
+    hbox:
+        label _("D-Pad, Sticks")
+        text _("Navega la interfaz.")
+
+    hbox:
+        label _("Inicio, Guía, B/Botón Derecho")
+        text _("Accede al menú del juego.")
+
+    hbox:
+        label _("Y/Botón superior")
+        text _("Oculta la interfaz.")
+
+    textbutton _("Calibrar") action GamepadCalibrate()
+
+
+style help_button is gui_button
+style help_button_text is gui_button_text
+style help_label is gui_label
+style help_label_text is gui_label_text
+style help_text is gui_text
+
+style help_button:
+    properties gui.button_properties("help_button")
+    xmargin 12
+
+style help_button_text:
+    properties gui.text_properties("help_button")
+
+style help_label:
+    xsize 375
+    right_padding 30
+
+style help_label_text:
+    size gui.text_size
+    xalign 1.0
+    textalign 1.0
+
+
 
 ################################################################################
 ## Pantallas adicionales
@@ -1236,15 +2484,15 @@ screen skip_indicator():
 
 ## Esta transformación provoca el parpadeo de las flechas una tras otra.
 transform delayed_blink(delay, cycle):
-    alpha .5
+    alpha 0.5
 
     pause delay
 
     block:
-        linear .2 alpha 1.0
-        pause .2
-        linear .2 alpha 0.5
-        pause (cycle - .4)
+        linear 0.2 alpha 1.0
+        pause 0.2
+        linear 0.2 alpha 0.5
+        pause (cycle - 0.4)
         repeat
 
 
@@ -1287,9 +2535,9 @@ screen notify(message):
 transform notify_appear:
     on show:
         alpha 0
-        linear .25 alpha 1.0
+        linear 0.25 alpha 1.0
     on hide:
-        linear .5 alpha 0.0
+        linear 0.5 alpha 0.0
 
 
 style notify_frame is empty
@@ -1525,7 +2773,7 @@ style pref_vbox:
     variant "medium"
     xsize 675
 
-## Como puede que no haya un mouse, reemplazamos el menú rápido con una versión
+## Como puede que no haya un ratón, reemplazamos el menú rápido con una versión
 ## que usa menos botones y más grandes, más fáciles de tocar.
 screen quick_menu():
     variant "touch"
@@ -1627,3 +2875,80 @@ style slider_vbox:
 style slider_slider:
     variant "small"
     xsize 900
+
+
+#####################33###################3
+## [*] Personalizados PRopios
+###############################3##############3
+
+
+################################################################################
+
+screen after_selector():
+    # TODO: mejorar:
+    #       * botones
+    #       grid añadir a image butons con texto como sutitulo
+    tag menu
+
+    frame:
+        style_prefix "submenu"
+        xalign 0.5
+        yalign 0.5
+
+        vbox:
+            spacing 25
+            label _("After Stories Disponibles")
+            
+            grid 2 3:  # Ajusta según cuantos afters tengas
+                spacing 25
+                for story in after_titles:
+                    if story in persistent.after_story_unlocked:
+                        textbutton "🔓 " + "[after_titles[story]]":
+                            action Start(story)
+                    else:
+                        text "🔒 ? ? ?"
+            hbox:
+                textbutton _("Regresar") action ShowMenu("main_menu")
+                textbutton _("Rutas") action ShowMenu("route_selector")
+
+    key "game_menu" action ShowMenu("main_menu")
+
+# TODO hacer sus propios stilo que no hereden del main menu
+# TODO crear su archivo gui
+
+
+
+
+################################################################################
+screen route_selector(): 
+    # TODO: mejorar:
+    #       * botones
+    #       grid añadir a image butons con texto como sutitulo
+    tag menu
+
+    frame:
+        style_prefix "submenu"
+        xalign 0.5
+        yalign 0.5
+
+        vbox:
+            spacing 25
+            label _("Seleccionar Ruta")
+            
+            grid 2 3:  # Ajusta según cuantos afters tengas
+                spacing 25
+                for route in route_titles:
+                    if route in persistent.unlocked_routes:
+                        textbutton "🔓 " + "[route_titles[route]]" action Start(route)
+                        # hover_sound gui.hover_sound
+                        # activate_sound gui.activate_sound
+                    else:
+                        text "🔒 ? ? ?"
+            hbox:
+                textbutton _("Regresar") action ShowMenu("main_menu")
+                textbutton _("After Stories") action ShowMenu("after_selector")
+
+    key "game_menu" action ShowMenu("main_menu")
+
+# TODO hacer sus propios stilo que no hereden del main menu
+# TODO crear su archivo gui.

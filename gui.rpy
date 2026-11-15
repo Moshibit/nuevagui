@@ -23,7 +23,7 @@ define config.check_conflicting_properties = True
 
 ## Colores #####################################################################
 ##
-## Los colores del texto de la interfaz
+## Los colores del texto de la interfaz.
 
 ## El color de acento usado en toda la interfaz para etiquetar y resaltar el
 ## texto.
@@ -42,7 +42,7 @@ define gui.hover_color = '#66c1e0'
 
 ## El color usado en el botón de texto cuando está seleccionado pero no
 ## enfocado. Un botón está seleccionado si representa la pantalla actual o el
-## valor actual de una preferencia.
+## valor actual de un ajuste.
 define gui.selected_color = '#ffffff'
 
 ## El color de los botones de texto que no pueden ser seleccionados.
@@ -53,9 +53,12 @@ define gui.insensitive_color = '#8888887f'
 define gui.muted_color = '#003d51'
 define gui.hover_muted_color = '#005b7a'
 
-## Colores usados para el texto del diálogo y de las elecciones de menú.
+## Colores usados para el texto del diálogo y de las decisiones de menú.
 define gui.text_color = '#ffffff'
 define gui.interface_text_color = '#ffffff'
+
+## [*] Color del borde del texto de la interface: (grosor, color, x_offset, y_offset) 
+# define gui.interface_text_outlines = [(2, "#000000cc", 0, 0)]
 
 
 ## Fuentes y tamaños de fuentes ################################################
@@ -206,9 +209,9 @@ define gui.quick_button_text_selected_color = gui.accent_color
 # define gui.navigation_button_width = 250
 
 
-## Botones de elección #########################################################
+## Botones de decisión #########################################################
 ##
-## Los botones de elección se utilizan en los menús del juego.
+## Los botones de decisión se utilizan en los menús del juego.
 
 define gui.choice_button_width = 1185
 define gui.choice_button_height = None
@@ -262,16 +265,16 @@ define gui.skip_ypos = 15
 ## Posición vertical de la pantalla de notificación.
 define gui.notify_ypos = 68
 
-## Espacio entre elecciones del menú.
+## Espacio entre decisiones del menú.
 define gui.choice_spacing = 33
 
 ## Botones en la sección de navegación del menú principal y el menú del juego.
 define gui.navigation_spacing = 6
 
-## Controla el espacio entre preferencias.
+## Controla el espacio entre ajustes.
 define gui.pref_spacing = 15
 
-## Controla el espacio entre botones de preferencia.
+## Controla el espacio entre botones de ajustes.
 define gui.pref_button_spacing = 0
 
 ## Espacio entre botones de página.
@@ -489,3 +492,81 @@ init python:
 
         gui.nvl_button_width = 1860
         gui.nvl_button_xpos = 30
+
+
+################################################################################
+## [*]Personalización propia
+################################################################################
+
+## Colores #####################################################################
+##
+## Los colores del texto de la interfaz.
+
+## [*] Color del borde del texto de la interface: (grosor, color, x_offset, y_offset) 
+# define gui.interface_text_outlines = [(2, "#000000cc", 0, 0)]
+
+
+## Fuentes y tamaños de fuentes ################################################
+##
+## las feuntes usadas
+
+# [placeholder]
+
+## Menú principal y menús del juego ############################################
+##
+## Controla la apariencia del menú principal y menús del juego
+
+## Logo del juego
+define gui.main_menu_logo = "gui/game_logo.png"
+# define gui.main_menu_logo_position = (0.5, 0.6) [X]
+define gui.main_menu_logo_xaling = 0.5
+define gui.main_menu_logo_ypos = 0.6
+
+## --- Navi
+## Estilos de textos del menu principal
+define gui.navi_button_text_size = 26
+define gui.navi_button_text_xalign = 0.5
+
+## Estilos de textos informativos
+define gui.version_text_size = 18
+define gui.version_text_outlines = [(1, "#000000aa", 0, 0)]
+
+## Posiciones de texto informativo
+define gui.main_menu_version_position = (-20, -20)
+define gui.main_menu_copyright_position = (20, -20)
+
+## Estilos de botones principales
+define gui.main_menu_navi_orientation = "horizontal" 
+# OPTIONS: "horizontal" o "vertical"
+
+define gui.main_menu_navi_hposition = (0.5, 0.9) # (xalign, yalign)
+define gui.navi_buttons_hspacing = 30
+
+define gui.main_menu_navi_vposition = (0.05, 0.5) # (xalign, yalign)
+define gui.navi_buttons_vspacing = 2
+
+define gui.navi_button_text_size = 26 # [x]
+define gui.navi_button_text_xalign = 0.5 # [x]
+
+    ## NOTE: Ejemplos de ajustes recomendados 
+    ##                                       position  / spacing
+    ##                                 (xalign, yalign)
+    ## Horizontal inferior centrado       -> (0.5, 0.9),  30
+    ## Horizontal inferiro a la izquierda -> (0.1, 0.9),  30
+    ## Horizontal inferiro a la derecha   -> (0.9, 0.9),  30
+    ## Vertical centrado                  -> (0.5, 0.5),  30 Horizontal / 2 Vertical
+    ## Vertical a la izquierda            -> (0.1, 0.5),  2 
+    ## Vertical a la derecha              -> (0.9, 0.5),  2 
+
+## Textos al pie
+define gui.footer_text_size = 20
+# define gui.footer_text_outlines = [(1, "#000000aa", 0, 0)]
+
+## Submenús
+define gui.submenu_hspacing = 30
+define gui.submenu_vspacing = 10
+define gui.submenu_padding = (25, 25)
+define gui.submenu_button_text_size = 24
+define gui.submenu_button_text_xalign = 0.0
+
+# TODO: las demas varaibles GUI

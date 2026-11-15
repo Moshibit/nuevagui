@@ -117,7 +117,7 @@ define config.window_show_transition = Dissolve(.2)
 define config.window_hide_transition = Dissolve(.2)
 
 
-## Preferencias por defecto ####################################################
+## Ajustes predeterminados #####################################################
 
 ## Controla la velocidad del texto por defecto. El valor por defecto 0 indica
 ## infinito; cualquier otro número indica el número de caracteres por segundo
@@ -215,3 +215,46 @@ init python:
 ## separados por una barra.
 
 # define build.itch_project = "renpytom/test-project"
+
+
+################################3
+## [*] Añadidos perosnales
+##############################33
+
+## Información de build ########################################################
+##
+## TODO: ??
+
+#init offset = -2
+
+define build.year = "2026"
+# EXAMPLE: [2020, 2000-2020]
+
+define build.developer = "developer_team"
+
+define build.edition = "standar" 
+## CHECE ONE: [demo, _trial, press, standar, premium]
+
+define build.rated = "all"
+## CHECE ONE: [all, censored, 18+]
+
+# • ESRB (Norteamérica): E, E10+, T, M, AO, RP, RP 17+
+# • PEGI (Europa): 3, 7, 12, 16, 18, !
+# • CERO (Japón): A, B, C, D, Z
+# • USK (Alemania): 0, 6, 12, 16, 18
+# • ACB (Australia): G, PG, M, MA 15+, R 18+, RC
+# • ClassInd (Brasil): L, 10, 12, 14, 16, 18
+# • GRAC (Corea del Sur): ALL, 12, 15, 19
+# • GSRR (Taiwán): 0+, 6+, 12+, 15+, 18+
+# • SMECCV (México): A, B, B15, C, D
+# • IARC (Global / Digital): 3+, 7+, 12+, 16+, 18+
+
+
+define build.market = "general"
+## CHECE ONE: [general, Steam, itch.io, None]
+
+define build.platform = "multiplataform"
+## CHECE ONE: [multiplataform, PC, Linux, Macintosh, Windows, Android, _iOS, Web]
+
+# temporal TODO: ???
+define my_config.dlc = []
