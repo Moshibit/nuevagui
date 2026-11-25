@@ -304,7 +304,7 @@ screen quick_menu():
                 textbutton _("Atrás") action Rollback()
                 textbutton _("Historial") action ShowMenu('history')
                 #if not preferences.afm_enable:
-                textbutton _("Auto") action Preference("auto-forward", "toggle") # TODO: arreglar, el boton se queda activado al terminar el juego y en otras circunstancias, al salir o regresar a main deberia hacer toggle a esta variable eso lo arreglaria
+                textbutton _("Auto") action Preference("auto-forward", "toggle")
                 # else:
                 #     textbutton _("No auto") action Preference("auto-forward", "toggle")
                 textbutton _("Saltar") action Skip() # alternate Skip(fast=True, confirm=True) # TODO: decidir si es uno solo botón y dos separados
@@ -1018,6 +1018,38 @@ screen about():
 
             text _("Hecho con {a=https://www.renpy.org/}Ren'Py{/a} [renpy.version_only].\n\n[renpy.license!t]")
 
+### EJEMPLO >>>TODO: pestañas. 
+#                 #disclaimers detallados> ficción, adulto, triggers
+#                 #licencias/ uso just/ legal
+#                 #creditos, motor, desarrolladores,
+#                 # agradecimientos
+#                 #ayuda> teclado muse control, sobre renpy, sobre mecanicas del juego
+#                 # contacto redes web correos
+# screen about():
+#     tag menu
+#     use game_menu(_("About"), scroll="viewport"):
+#         style_prefix "about"
+
+#         vbox:
+#             spacing 20
+#             label "[config.name!t]"
+#             text _("Version [config.version!t]\n")
+
+#             # Sección de disclaimers legales
+#             label _("Avisos Legales")
+#             text _("{i}Este es un trabajo de ficción. Cualquier parecido con la realidad es pura coincidencia.{/i}\n\n"
+#                    "Este juego puede contener temas sensibles. Se recomienda discreción.\n\n"
+#                    "Ren'Py® es una marca registrada de Tom Rothamel. Todos los personajes y situaciones son propiedad de [NOMBRE_DEL_ESTUDIO/AUTOR].")
+
+#             # Sección de créditos del motor
+#             label _("Motor de Juego")
+#             text _("Creado con Ren'Py [renpy.version_string]\n"
+#                    "© 2004-2026 Tom Rothamel y colaboradores.\n"
+#                    "Visita {a=https://www.renpy.org}www.renpy.org{/a} para más información.")
+
+#             # Sección de créditos adicionales (arte, música, etc.)
+#             label _("Créditos")
+#             text _("Arte: [NOMBRE]\nMúsica: [NOMBRE]\nProgramación: [NOMBRE]")
 
 style about_label is gui_label
 style about_label_text is gui_label_text
@@ -1967,13 +1999,16 @@ style notify_text:
 screen ctc(arg=None):
     zorder 100
 
+    # TODO esperar teimpo extra 0.5
+
     hbox:
         xalign 0.98 yalign 0.98
 
-        add arg
+        # add arg
 
-        text _("clic para continuar"):
-            size 24
+        text "." at delayed_blink(0.0, 1.0)
+        text ".." at delayed_blink(0.2, 1.0)
+        text "..." at delayed_blink(0.4, 1.0)
 
 
 # arg
@@ -2333,6 +2368,118 @@ style slider_slider:
 
 ################################################################################
 
+screen language_selection_screen():
+    tag menu
+    modal True
+    # Fondo oscuro semi-transparente
+    add Solid("#000000CC")
+
+    frame:
+        align (0.5, 0.5)
+        padding (40, 40)
+        background Frame("gui/frame.png", 10, 10) # Opcional: usa un fondo de marco
+
+        vbox:
+            spacing 25
+            xalign 0.5
+
+            text "Selecciona tu idioma / Select your language" size 30 xalign 0.5
+
+            # Botón para Español
+            textbutton "Español":
+                action [Language(None), Return()]
+                xalign 0.5
+                text_size 24
+
+            # Botón para Inglés
+            textbutton "English":
+                action [Language("english"), Return()]
+                xalign 0.5
+                text_size 24
+
+            # Puedes añadir más idiomas aquí
+            # textbutton "日本語": action [Language("japanese"), Return()] xalign 0.5 text_size 24
+
+
+# --- SCREEN DE EJEMPLO PARA LA PRIMERA EJECUCIÓN ---
+# Puedes personalizar esta screen o reemplazarla por una llamada a un label.
+screen first_run_experience():
+    tag menu
+    modal True
+    
+    frame:
+        align (0.5, 0.5)
+        padding (40, 40)
+        
+        vbox:
+            spacing 20
+            text "{b}Bienvenido/a por primera vez{/b}" size 30 xalign 0.5
+            
+            text "Esta es una experiencia única que solo verás una vez." xalign 0.5
+            
+            textbutton "Seleccionar Idioma" action ShowMenu("language") xalign 0.5
+            textbutton "Comenzar" action Return() xalign 0.5
+
+
+# --- SCREEN DE EJEMPLO PARA LA VERIFICACIÓN DE EDAD MANUAL ---
+screen age_verification_screen():
+    tag menu
+    modal True
+    
+    frame:
+        align (0.5, 0.5)
+        padding (40, 40)
+        
+        vbox:
+            spacing 20
+            text "{b}Verificación de Edad{/b}" size 30 xalign 0.5
+            
+            text "Para acceder a este contenido, debes confirmar que tienes 18 años o más." xalign 0.5
+            
+            textbutton "Sí, soy mayor de 18 años" action Return(True) xalign 0.5
+            textbutton "No, soy menor de 18 años" action Return(False) xalign 0.5
+
+
+
+screen title_screen(title, subtitle=None, bg_color="#000000", bg_image=None, title_color=gui.accent_color, subtitle_color=gui.accent_color, img=None):
+    zorder 1
+
+    if bg_image:
+        add bg_image
+    else:
+        add Solid(bg_color)
+
+    text title:
+        xalign 0.5
+        ypos 0.5
+        # yalign 1.0 # Incompatible con ypos
+
+        font gui.text_font #"Impact.ttf"
+        size 60
+        color title_color # gui.accent_color
+        text_align 0.5
+        layout "subtitle"
+
+    if subtitle:
+        text subtitle:
+            xalign 0.5
+            ypos 0.60
+            # yalign 0.0  # Incompatible con ypos
+
+            font gui.text_font # "Impact.ttf"
+            size 35
+            color subtitle_color
+            text_align 0.5
+            layout "subtitle"
+
+    if img:
+        add img:
+            xalign 0.5
+            yalign 0.0 #? TODO: duda
+
+
+###########################################################333
+##########################################################333
 screen after_selector():
     # TODO: mejorar:
     #       * botones
